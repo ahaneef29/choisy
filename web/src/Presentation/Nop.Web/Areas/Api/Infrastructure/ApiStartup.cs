@@ -13,6 +13,8 @@ namespace Nop.Web.API.Infrastructure
     {
         public void Configure(IApplicationBuilder application)
         {
+            application.UseCors("MyCorsPolicy");
+
             application.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
             {
                 appBuilder.UseHeaderParser();
@@ -21,6 +23,17 @@ namespace Nop.Web.API.Infrastructure
 
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddCors(feature =>
+              feature.AddPolicy(
+                  "MyCorsPolicy",
+                  apiPolicy => apiPolicy
+                      .AllowAnyOrigin()
+                      //.WithOrigins("https://myotherdomain.com")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .SetIsOriginAllowed(host => true)
+                      .AllowCredentials()
+              ));
         }
 
         public int Order => 100; //should be loaded after common services 
