@@ -30,11 +30,12 @@ export class AppSettingService {
     this.schemaSvc = injector.get(SchemaService);
     this.platform = injector.get(Platform);
 
-    if (this.platform.is('cordova')) {
-      this.dbService = injector.get(DbSqlService);
-    } else {
-      this.dbService = injector.get(DbWebService);
-    }
+    // if (this.platform.is('capacitor')) {
+    //   this.dbService = injector.get(DbSqlService);
+    // } else {
+    //   this.dbService = injector.get(DbWebService);
+    // }
+    this.dbService = injector.get(DbWebService);
     this.pubsubSvc = injector.get(NgxPubSubService);
   }
 
@@ -45,10 +46,7 @@ export class AppSettingService {
         value: value == true ? 'yes' : 'no',
       })
       .then(() => {
-        AppSettingService.settingCache.set(
-          AppConstant.KEY_APP_TOUR,
-          value
-        );
+        AppSettingService.settingCache.set(AppConstant.KEY_APP_TOUR, value);
       });
   }
 

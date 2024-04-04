@@ -8,6 +8,10 @@ import { LocalizationService } from './modules/universal/localization.service';
 import { AppConstant } from './modules/universal/app-constant';
 import { DOCUMENT } from '@angular/common';
 import { LanguagePage } from './modules/language/language.page';
+import { CustomerSettingService } from './modules/customer/customer-setting.service';
+import { CustomerService } from './modules/customer/customer.service';
+import { CustomerRoleSystemName } from './modules/customer/customer.model';
+import { CustomerConstant } from './modules/customer/customer-constant';
 
 @Component({
   selector: 'app-root',
@@ -17,15 +21,15 @@ import { LanguagePage } from './modules/language/language.page';
 export class AppComponent {
   existingRouteUrl;
   workingLanguage;
-  // currentUser: IUserProfile;
+  currentCustomer: any;
 
   constructor(
     private router: Router,
     private platform: Platform,
     private appSettingSvc: AppSettingService,
     private pubsubSvc: NgxPubSubService,
-    private helperSvc: HelperService,
-    private localizationSvc: LocalizationService,
+    private customerSettingSvc: CustomerSettingService,
+    private customerSvc: CustomerService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     private modalCtrl: ModalController
@@ -271,14 +275,47 @@ export class AppComponent {
   }
 
   private async _setDefaults() {
-    const res = await Promise.all([this.appSettingSvc.getWorkingLanguage(), this.appSettingSvc.getAppTourSkipped()]);
+    const ce = await this.customerSettingSvc.getCurrentCustomerEmail();
+    if (ce) {
+      this.currentCustomer = await this.customerSvc.getCustomerLocal(ce);
+    }
+
+    if (!this.currentCustomer) {
+      this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer();
+    } else {
+      //refresh guest always...
+      const guestCustomerRole = this.currentCustomer.customerRoles.filter(
+        (cr) => cr.systemName == CustomerRoleSystemName.Guests
+      );
+      if (guestCustomerRole.length) {
+        this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer(ce);
+      }
+    }
+
+    // notify to refresh dashboard also
+    this.pubsubSvc.publishEvent(CustomerConstant.EVENT_CUSTOMER_LOGGEDIN, {
+      customer: this.currentCustomer,
+      shouldFetchCart: false,
+    });
+     
+    if (AppConstant.DEBUG) {
+      console.log('AppComponent: initializeApp: currentUser', this.currentCustomer);
+    }
+
+    // if (this.splashScreen) {
+    //   this.splashScreen.hide();
+    // }
+
+    const res = await Promise.all([
+      this.appSettingSvc.getWorkingLanguage(),
+      this.appSettingSvc.getAppTourSkipped(),
+    ]);
 
     let wkl = res[0];
     let appTour = res[1];
-    
+
     if (!wkl) {
       const wkl = await this._openLanguageModal();
-      console.log(wkl);
 
       await this.appSettingSvc.putWorkingLanguage(wkl);
       this.pubsubSvc.publishEvent(AppConstant.EVENT_LANGUAGE_CHANGED, {
@@ -288,10 +325,6 @@ export class AppComponent {
       });
     }
 
-    if(!appTour) {
-      this.router.navigate(['/app-tour'])     
-    }
-
     const url = this.router.routerState.snapshot.url;
     const ignoreRoutes = ['privacy', 'feedback'];
     const exists = ignoreRoutes.filter((r) => url.includes(r));
@@ -299,10 +332,16 @@ export class AppComponent {
       return;
     }
 
+    if (!appTour) {
+      this.router.navigate(['/app-tour']);
+    }
+
     if (this.existingRouteUrl) {
       await this._navigateTo(this.existingRouteUrl);
       return;
     }
+
+    await this._navigateTo('/home');
   }
 
   private async _openLanguageModal() {

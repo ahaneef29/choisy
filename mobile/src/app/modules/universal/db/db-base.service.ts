@@ -1,3 +1,5 @@
+// @ts-ignore
+
 export class DbService {
   get Db(): any {
     return;

@@ -4,14 +4,11 @@ export class AppConstant {
   public static readonly DEBUG = !environment.production;
 
   public static readonly BASE_URL = !environment.production
-    ? 'http://192.168.10.5:3000/api/v1/'
-    : 'https://www.ratesalt.com/api/';
+    ? 'http://localhost:8081/api/'
+    : 'http://www.choisy.com/api/';
 
-  // public static readonly BASE_URL = !environment.production
-  //   ? 'http://localhost:3000/api/v1/'
-  //   : 'https://www.ratesalt.com/api/';
   public static readonly BASE_API_URL = `${AppConstant.BASE_URL}`;
-  public static readonly DB_NAME = 'amanah';
+  public static readonly DB_NAME = 'choisy';
   public static readonly GOOGLE_MAP_API_KEY =
     'AIzaSyD0y6Q6UmumKiMplydd-jynVkXkeOFH7WY';
 
@@ -28,5 +25,4 @@ export class AppConstant {
 
   public static readonly KEY_WORKING_LANGUAGE = 'key:workingLanguage';
   public static readonly KEY_APP_TOUR = 'key:appTour';
-
 }

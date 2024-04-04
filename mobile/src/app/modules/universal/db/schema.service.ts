@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SchemaService {
   private _setting = 'setting';
-  private _user = 'user';
+  private _customer = 'user';
 
   schema = {
     stores: [
@@ -24,28 +24,24 @@ export class SchemaService {
         ],
       },
       {
-        name: this._user,
+        name: this._customer,
         columns: [
           {
-            name: 'mobile',
+            name: 'email',
             isPrimaryKey: true,
             type: 'TEXT',
           },
           {
             name: 'name',
             type: 'TEXT',
-          },
-          {
-            name: 'email',
-            type: 'TEXT',
-          },
+          }
         ],
       },
     ],
   };
   tables = {
     setting: this._setting,
-    user: this._user,
+    customer: this._customer,
   };
 
   constructor() {}
