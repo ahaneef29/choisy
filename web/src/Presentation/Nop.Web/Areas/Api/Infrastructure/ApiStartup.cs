@@ -18,6 +18,7 @@ namespace Nop.Web.API.Infrastructure
             application.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
             {
                 appBuilder.UseHeaderParser();
+
             });
         }
 
@@ -32,7 +33,7 @@ namespace Nop.Web.API.Infrastructure
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .SetIsOriginAllowed(host => true)
-                      .AllowCredentials()
+                      //.AllowCredentials()
               ));
         }
 
