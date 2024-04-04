@@ -4,8 +4,8 @@ export class AppConstant {
   public static readonly DEBUG = !environment.production;
 
   public static readonly BASE_URL = !environment.production
-    ? 'https://localhost:50463/api/'
-    : 'https://www.ratesalt.com/api/';
+    ? 'http://localhost:8081/api/'
+    : 'http://www.choisy.com/api/';
 
   public static readonly BASE_API_URL = `${AppConstant.BASE_URL}`;
   public static readonly DB_NAME = 'choisy';

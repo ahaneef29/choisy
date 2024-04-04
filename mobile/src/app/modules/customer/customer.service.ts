@@ -52,8 +52,6 @@ export class CustomerService extends BaseService {
   }
 
   putCustomerLocal(customer: ICustomer) {
-    return this.dbService.putLocal(this.schemaSvc.tables.customer, {
-      value: customer,
-    });
+    return this.dbService.putLocal(this.schemaSvc.tables.customer, customer);
   }
 }

@@ -3,6 +3,7 @@ import {
   HttpClient,
   HttpHeaders,
   HttpErrorResponse,
+  HttpStatusCode,
 } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 
@@ -43,18 +44,15 @@ export class BaseService {
     this.helperSvc = injector.get(HelperService);
     this.localizationSvc = injector.get(LocalizationService);
     this.pubsubSvc = injector.get(NgxPubSubService);
-    this.dbService = injector.get(DbWebService);
+    // this.dbService = injector.get(DbWebService);
 
-    setTimeout(async () => {
-      // const info = await Device.getInfo();
-      // if (this.platform.is('android') || this.platform.is('ios')) {
+      // if (this.platform.is('capacitor')) {
       //   this.dbService = injector.get(DbSqlService);
       // } else {
       //   this.dbService = injector.get(DbWebService);
       // }
 
       this.dbService = injector.get(DbWebService);
-    }, 0);
   }
 
   protected getData<T>(
@@ -77,11 +75,19 @@ export class BaseService {
           url += `${prop}=${body[prop]}`;
         }
       }
-      const request = this.http.get<T>(url, {
+      const request = this.http.get<ApiResponse>(url, {
         headers: headers,
       });
       request.subscribe(
-        (result) => resolve(<T>result),
+        (result) => {
+          if(result.StatusCode !== HttpStatusCode.Ok) {
+            reject(result.Exception);
+            return;
+          }
+
+          const d = this._toCamelCase(result.Data);
+          resolve(<T>d);
+        },
         async (error) => {
           // await this.handleError(error, errorHandler, request, resolve, reject);
         }
@@ -105,12 +111,18 @@ export class BaseService {
       //add to queue
       let body = args.body;
       this.http
-        .post<T>(args.url, body, {
+        .post<ApiResponse>(args.url, body, {
           headers: headers,
         })
         .subscribe(
           (result) => {
-            resolve(<T>result);
+            if(result.StatusCode !== HttpStatusCode.Ok) {
+              reject(result.Exception);
+              return;
+            }
+  
+            const d = this._toCamelCase(result.Data);
+            resolve(<T>d);
           },
           (error) => {
             this.handleError(error, args);
@@ -206,6 +218,31 @@ export class BaseService {
     }
     return headers;
   }
+
+  private _toCamelCase(o) {
+    var newO, origKey, newKey, value
+    if (o instanceof Array) {
+      return o.map((value) => {
+          if (typeof value === "object") {
+            value = this._toCamelCase(value)
+          }
+          return value
+      })
+    } else {
+      newO = {}
+      for (origKey in o) {
+        if (o.hasOwnProperty(origKey)) {
+          newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString()
+          value = o[origKey]
+          if (value instanceof Array || (value !== null && value.constructor === Object)) {
+            value = this._toCamelCase(value)
+          }
+          newO[newKey] = value
+        }
+      }
+    }
+    return newO;
+  }
 }
 
 export class HttpParams {
@@ -215,4 +252,11 @@ export class HttpParams {
   ignoreContentType?: boolean;
   overrideUrl?: boolean;
   httpHeaders?: HttpHeaders;
+}
+
+export interface ApiResponse {
+  StatusCode: number
+  Message: any
+  Data: any
+  Exception: any
 }

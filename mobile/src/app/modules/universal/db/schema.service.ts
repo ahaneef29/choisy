@@ -27,18 +27,14 @@ export class SchemaService {
         name: this._customer,
         columns: [
           {
-            name: 'mobile',
+            name: 'email',
             isPrimaryKey: true,
             type: 'TEXT',
           },
           {
             name: 'name',
             type: 'TEXT',
-          },
-          {
-            name: 'email',
-            type: 'TEXT',
-          },
+          }
         ],
       },
     ],
