@@ -1,13 +1,18 @@
 ﻿using System.Net;
+using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Wordprocessing;
+using FluentMigrator.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Nop.Core;
+using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.Gdpr;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Media;
+using Nop.Core.Domain.Messages;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
@@ -27,8 +32,10 @@ using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Tax;
 using Nop.Services.Vendors;
+using Nop.Web.API;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Api.Models;
+using Nop.Web.Models.Customer;
 using ILogger = Nop.Services.Logging.ILogger;
 
 namespace Nop.Web.Areas.Api.Controllers
@@ -127,7 +134,7 @@ namespace Nop.Web.Areas.Api.Controllers
         #endregion
 
         [HttpGet("GetGuestCustomer")]
-        public async Task<HttpResponseModel<object>> GetGuestCustomer(string token = "")
+        public async Task<IActionResult> GetGuestCustomer(string token = "")
         {
             try
             {
@@ -143,47 +150,47 @@ namespace Nop.Web.Areas.Api.Controllers
 
                 var model = await this.PrepareCustomerInfo(customer);
 
-                var result = new HttpResponseModel<object>
+                return new CamelCaseActionResult(new CamelCaseResult
                 {
-                    StatusCode = HttpStatusCode.OK,
-                    Data = model
-                };
-                return result;
+                    Data = model,
+                    StatusCode = HttpStatusCode.OK
+                });
             }
             catch (Exception ex)
             {
                 await _logger.ErrorAsync(ex.Message, ex);
 
-                return new HttpResponseModel<object>
+                return new CamelCaseActionResult(new CamelCaseResult
                 {
-                    Exception = ex
-                };
+                    Exception = ex,
+                    StatusCode = HttpStatusCode.InternalServerError
+                });
+
             }
         }
 
         [HttpGet("GetCustomer")]
-        public async Task<HttpResponseModel<object>> GetCustomer()
+        public async Task<IActionResult> GetCustomer()
         {
             var customer = await _workContext.GetCurrentCustomerAsync();
             var model = await PrepareCustomerInfo(customer);
 
-            return new HttpResponseModel<object>
+            return new CamelCaseActionResult(new CamelCaseResult
             {
-                StatusCode = HttpStatusCode.OK,
-                Data = model
-            };
+                Data = model,
+                StatusCode = HttpStatusCode.OK
+            });
         }
 
         [HttpPost("UpdateCustomer")]
-        public async Task<HttpResponseModel<object>> UpdateCustomer(ParamsModel.CustomerUpdateParamsModel paramsModel)
+        public async Task<IActionResult> UpdateCustomer(ParamsModel.CustomerUpdateParamsModel paramsModel)
         {
             var customer = await _workContext.GetCurrentCustomerAsync();
             if (!await _customerService.IsRegisteredAsync(customer))
-                return new HttpResponseModel<object>
+                return new CamelCaseActionResult(new CamelCaseResult
                 {
                     StatusCode = HttpStatusCode.BadRequest
-                };
-
+                });
 
             //if (!string.IsNullOrEmpty(paramsModel.Fullname))
             //    await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.FirstNameAttribute, paramsModel.Fullname);
@@ -199,197 +206,540 @@ namespace Nop.Web.Areas.Api.Controllers
                 if (!changePasswordResult.Success)
                 {
                     //errors
-                    return new HttpResponseModel<object>
+                    return new CamelCaseActionResult(new CamelCaseResult
                     {
                         StatusCode = HttpStatusCode.BadRequest,
-                        Message = string.Join(", ", changePasswordResult.Errors)
-                    };
+                        Data = string.Join(", ", changePasswordResult.Errors)
+                    });
                 }
             }
 
             var model = await PrepareCustomerInfo(customer);
-            return new HttpResponseModel<object>
+            return new CamelCaseActionResult(new CamelCaseResult
             {
-                StatusCode = HttpStatusCode.OK,
-                Data = model
-            };
+                Data = model,
+                StatusCode = HttpStatusCode.OK
+            });
         }
 
-        [HttpPost("Login")]
-        public async Task<HttpResponseModel<object>> Login([FromBody] ParamsModel.LoginParamsModel loginParamsModel)
+        //[HttpPost("Login")]
+        //public async Task<IActionResult> Login([FromBody] ParamsModel.LoginParamsModel loginParamsModel)
+        //{
+        //    ////validate CAPTCHA
+        //    //if (_captchaSettings.Enabled && _captchaSettings.ShowOnLoginPage && !captchaValid)
+        //    //{
+        //    //    ModelState.AddModelError("", await _localizationService.GetResourceAsync("Common.WrongCaptchaMessage"));
+        //    //}
+
+        //    string errorMessage = await string.Empty;
+        //    if (string.IsNullOrEmpty(loginParamsModel.Username))
+        //        errorMessage = await await _localizationService.GetResourceAsync("Account.Login.Fields.Email.Required"
+        //            , (await _workContext.GetWorkingLanguageAsync()).Id);
+        //    else if (string.IsNullOrEmpty(loginParamsModel.Username))
+        //        errorMessage = await await _localizationService.GetResourceAsync("Account.Fields.ConfirmPassword.Required"
+        //            , (await _workContext.GetWorkingLanguageAsync()).Id);
+
+        //    var model = new
+        //    {
+        //        Username = loginParamsModel.Username.Trim(),
+        //        Email = loginParamsModel.Username.Trim(),
+        //        Password = loginParamsModel.Password,
+        //        RememberMe = false
+        //    };
+
+        //    if (!string.IsNullOrEmpty(errorMessage))
+        //    {
+        //        return new CamelCaseActionResult(new CamelCaseResult
+        //        {
+        //            StatusCode = HttpStatusCode.BadRequest,
+        //            Data = errorMessage
+        //        });
+        //    }
+
+        //    try
+        //    {
+        //        //    var loginResult = await _customerRegistrationService.ValidateCustomerAsync(
+        //        //        _customerSettings.UsernamesEnabled ? model.Username : model.Email, model.Password);
+        //        //    switch (loginResult)
+        //        //    {
+        //        //        case CustomerLoginResults.Successful:
+        //        //            {
+        //        //                var customer = _customerSettings.UsernamesEnabled
+        //        //                    ? await _customerService.GetCustomerByUsernameAsync(model.Username)
+        //        //                    : await _customerService.GetCustomerByEmailAsync(model.Email);
+
+        //        //                if ((await _workContext.GetCurrentCustomerAsync())?.Id != customer.Id)
+        //        //                {
+        //        //                    //migrate shopping cart
+        //        //                    await _shoppingCartService.MigrateShoppingCartAsync(await _workContext.GetCurrentCustomerAsync(), customer, true);
+
+        //        //                    await _workContext.SetCurrentCustomerAsync(customer);
+        //        //                }
+
+        //        //                //sign in new customer
+        //        //                await _authenticationService.SignInAsync(customer, model.RememberMe);
+
+        //        //                //raise event       
+        //        //                await _eventPublisher.PublishAsync(new CustomerLoggedinEvent(customer));
+
+        //        //                //activity log
+        //        //                await _customerActivityService.InsertActivityAsync(customer, "PublicStore.Login",
+        //        //                    await _localizationService.GetResourceAsync("ActivityLog.PublicStore.Login"), customer);
+
+        //        //                var infor = await this.PrepareCustomerInfo(customer);
+        //        //                return new HttpResponseModel<object>
+        //        //                {
+        //        //                    Data = infor,
+        //        //                    StatusCode = HttpStatusCode.OK
+        //        //                };
+        //        //            }
+        //        //        case CustomerLoginResults.CustomerNotExist:
+        //        //            return new HttpResponseModel<object>
+        //        //            {
+        //        //                StatusCode = HttpStatusCode.BadRequest,
+        //        //                Data = false,
+        //        //                Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.CustomerNotExist"
+        //        //                    , (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        //            };
+        //        //        case CustomerLoginResults.Deleted:
+        //        //            return new HttpResponseModel<object>
+        //        //            {
+        //        //                StatusCode = HttpStatusCode.BadRequest,
+        //        //                Data = false,
+        //        //                Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.Deleted"
+        //        //                    , (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        //            };
+        //        //        case CustomerLoginResults.NotActive:
+        //        //            return new HttpResponseModel<object>
+        //        //            {
+        //        //                StatusCode = HttpStatusCode.BadRequest,
+        //        //                Data = false,
+        //        //                Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.NotActive"
+        //        //                    , (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        //            };
+        //        //        case CustomerLoginResults.NotRegistered:
+        //        //            return new HttpResponseModel<object>
+        //        //            {
+        //        //                StatusCode = HttpStatusCode.BadRequest,
+        //        //                Data = false,
+        //        //                Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.NotRegistered"
+        //        //                    , (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        //            };
+        //        //        case CustomerLoginResults.LockedOut:
+        //        //            return new HttpResponseModel<object>
+        //        //            {
+        //        //                StatusCode = HttpStatusCode.BadRequest,
+        //        //                Data = false,
+        //        //                Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.LockedOut"
+        //        //                    , (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        //            };
+        //        //        case CustomerLoginResults.WrongPassword:
+        //        //        default:
+        //        //            return new HttpResponseModel<object>
+        //        //            {
+        //        //                StatusCode = HttpStatusCode.BadRequest,
+        //        //                Data = false,
+        //        //                Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials"
+        //        //                    , (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        //            };
+        //        //    }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _logger.ErrorAsync(ex.Message, ex, await _workContext.GetCurrentCustomerAsync());
+
+        //        return new CamelCaseActionResult(new CamelCaseResult
+        //        {
+        //            Exception = ex,
+        //            StatusCode = HttpStatusCode.InternalServerError
+        //        });
+        //    }
+        //}
+
+        //[HttpPost("PasswordRecoverySend")]
+        //public async Task<HttpResponseModel<object>> PasswordRecoverySend(ParamsModel.PasswordRecoveryParamsModel model)
+        //{
+        //    if (string.IsNullOrEmpty(model.Email))
+        //    {
+        //        return new HttpResponseModel<object>
+        //        {
+        //            StatusCode = HttpStatusCode.BadRequest,
+        //            Message = await _localizationService.GetResourceAsync("Account.Login.Fields.Email.Required", (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        };
+        //    }
+
+        //    var customer = await _customerService.GetCustomerByEmailAsync(model.Email);
+        //    if (customer == null || customer.Deleted || !customer.Active)
+        //    {
+        //        return new HttpResponseModel<object>
+        //        {
+        //            StatusCode = HttpStatusCode.BadRequest,
+        //            Message = await _localizationService.GetResourceAsync("Account.PasswordRecovery.EmailNotFound", (await _workContext.GetWorkingLanguageAsync()).Id)
+        //        };
+        //    }
+
+        //    //save token and current date
+        //    var passwordRecoveryToken = Guid.NewGuid();
+        //    await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.PasswordRecoveryTokenAttribute,
+        //        passwordRecoveryToken.ToString());
+
+        //    DateTime? generatedDateTime = DateTime.UtcNow;
+        //    await _genericAttributeService.SaveAttributeAsync(customer,
+        //        NopCustomerDefaults.PasswordRecoveryTokenDateGeneratedAttribute, generatedDateTime);
+
+        //    //send email
+        //    await _workflowMessageService.SendCustomerPasswordRecoveryMessageAsync(customer,
+        //        (await _workContext.GetWorkingLanguageAsync()).Id);
+
+        //    return new HttpResponseModel<object>
+        //    {
+        //        StatusCode = HttpStatusCode.OK,
+        //        Message = await _localizationService.GetResourceAsync("Account.PasswordRecovery.EmailHasBeenSent", (await _workContext.GetWorkingLanguageAsync()).Id)
+        //    };
+        //}
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] ParamsModel.RegistrationParamsModel paramsModel)
         {
-            ////validate CAPTCHA
-            //if (_captchaSettings.Enabled && _captchaSettings.ShowOnLoginPage && !captchaValid)
-            //{
-            //    ModelState.AddModelError("", await _localizationService.GetResourceAsync("Common.WrongCaptchaMessage"));
-            //}
-
-            string errorMessage = string.Empty;
-            if (string.IsNullOrEmpty(loginParamsModel.Username))
-                errorMessage = await _localizationService.GetResourceAsync("Account.Login.Fields.Email.Required"
-                    , (await _workContext.GetWorkingLanguageAsync()).Id);
-            else if (string.IsNullOrEmpty(loginParamsModel.Username))
-                errorMessage = await _localizationService.GetResourceAsync("Account.Fields.ConfirmPassword.Required"
-                    , (await _workContext.GetWorkingLanguageAsync()).Id);
-
-            var model = new
-            {
-                Username = loginParamsModel.Username.Trim(),
-                Email = loginParamsModel.Username.Trim(),
-                Password = loginParamsModel.Password,
-                RememberMe = false
-            };
-
-            if (!string.IsNullOrEmpty(errorMessage))
-            {
-                return new HttpResponseModel<object>
+            //check whether registration is allowed
+            if (_customerSettings.UserRegistrationType == UserRegistrationType.Disabled)
+                return new CamelCaseActionResult(new CamelCaseResult
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = errorMessage
-                };
-            }
+                    Data = null,
+                    StatusCode = HttpStatusCode.BadRequest
+                });
 
             try
             {
-                var loginResult = await _customerRegistrationService.ValidateCustomerAsync(
-                    _customerSettings.UsernamesEnabled ? model.Username : model.Email, model.Password);
-                switch (loginResult)
+                bool isModelValid = true;
+                string errorMessage = string.Empty;
+
+                int workLanguageId = (await _workContext.GetWorkingLanguageAsync()).Id;
+                if (string.IsNullOrEmpty(paramsModel.FirstName))
                 {
-                    case CustomerLoginResults.Successful:
+                    isModelValid = false;
+                    errorMessage = await _localizationService.GetResourceAsync("Account.Fields.FirstName.Required", workLanguageId);
+                }
+                //else if (string.IsNullOrEmpty(paramsModel.LastName))
+                //{
+                //    isModelValid = false;
+                //    errorMessage = await _localizationService.GetResourceAsync("Account.Fields.LastName.Required", workLanguageId);
+                //}
+                else if (string.IsNullOrEmpty(paramsModel.Email))
+                {
+                    isModelValid = false;
+                    errorMessage = await _localizationService.GetResourceAsync("Account.Fields.Email.Required", workLanguageId);
+                }
+                //else if (string.IsNullOrEmpty(paramsModel.Phone))
+                //{
+                //    isModelValid = false;
+                //    errorMessage = await _localizationService.GetResourceAsync("Address.Fields.PhoneNumber.Required", workLanguageId);
+                //}
+                else if (string.IsNullOrEmpty(paramsModel.Password))
+                {
+                    isModelValid = false;
+                    errorMessage = await _localizationService.GetResourceAsync("Account.Fields.ConfirmPassword.Required", workLanguageId);
+                }
+                else if (string.IsNullOrEmpty(paramsModel.ConfirmPassword))
+                {
+                    isModelValid = false;
+                    errorMessage = await _localizationService.GetResourceAsync("Account.Fields.ConfirmPassword.Required", workLanguageId);
+                }
+                else if (!paramsModel.Password.Equals(paramsModel.ConfirmPassword))
+                {
+                    isModelValid = false;
+                    errorMessage = await _localizationService.GetResourceAsync("Account.Fields.Password.EnteredPasswordsDoNotMatch", workLanguageId);
+                }
+
+                if (!isModelValid)
+                {
+                    return new CamelCaseActionResult(new CamelCaseResult
+                    {
+                        Data = errorMessage,
+                        StatusCode = HttpStatusCode.BadRequest
+                    });
+                }
+
+                var customer = await _workContext.GetCurrentCustomerAsync();
+                if (await _customerService.IsRegisteredAsync(customer))
+                {
+                    //Already registered customer. 
+                    await _authenticationService.SignOutAsync();
+
+                    //raise logged out event       
+                    await _eventPublisher.PublishAsync(new CustomerLoggedOutEvent(customer));
+
+                    customer = await _customerService.InsertGuestCustomerAsync();
+
+                    //Save a new record
+                    await _workContext.SetCurrentCustomerAsync(customer);
+                }
+
+                var store = await _storeContext.GetCurrentStoreAsync();
+                customer.RegisteredInStoreId = store.Id;
+
+                var model = new RegisterModel
+                {
+                    FirstName = paramsModel.FirstName.Trim(),
+                    //LastName = paramsModel.LastName,
+                    Email = paramsModel.Email.Trim(),
+                    Password = paramsModel.Password.Trim(),
+                    ConfirmPassword = paramsModel.ConfirmPassword.Trim(),
+                    //PhoneEnabled = false,
+                    //Phone = paramsModel.Phone
+                };
+
+                var customerEmail = model.Email;
+                var isApproved = _customerSettings.UserRegistrationType == UserRegistrationType.Standard;
+                var registrationRequest = new CustomerRegistrationRequest(customer,
+                    model.Email,
+                    _customerSettings.UsernamesEnabled ? model.Username : model.Email,
+                    model.Password,
+                    _customerSettings.DefaultPasswordFormat,
+                    store.Id,
+                    isApproved);
+                var registrationResult = await _customerRegistrationService.RegisterCustomerAsync(registrationRequest);
+                if (registrationResult.Success)
+                {
+                    //properties
+                    if (_dateTimeSettings.AllowCustomersToSetTimeZone)
+                        customer.TimeZoneId = model.TimeZoneId;
+
+                    //VAT number
+                    if (_taxSettings.EuVatEnabled)
+                    {
+                        customer.VatNumber = model.VatNumber;
+
+                        var (vatNumberStatus, _, vatAddress) = await _taxService.GetVatNumberStatusAsync(model.VatNumber);
+                        customer.VatNumberStatusId = (int)vatNumberStatus;
+                        //send VAT number admin notification
+                        if (!string.IsNullOrEmpty(model.VatNumber) && _taxSettings.EuVatEmailAdminWhenNewVatSubmitted)
+                            await _workflowMessageService.SendNewVatSubmittedStoreOwnerNotificationAsync(customer, model.VatNumber, vatAddress
+                                , _localizationSettings.DefaultAdminLanguageId);
+                    }
+
+                    //form fields
+                    if (_customerSettings.GenderEnabled)
+                        customer.Gender = model.Gender;
+                    if (_customerSettings.FirstNameEnabled)
+                        customer.FirstName = model.FirstName;
+                    if (_customerSettings.LastNameEnabled)
+                        customer.LastName = model.LastName;
+                    if (_customerSettings.DateOfBirthEnabled)
+                        customer.DateOfBirth = model.ParseDateOfBirth();
+                    if (_customerSettings.CompanyEnabled)
+                        customer.Company = model.Company;
+                    if (_customerSettings.StreetAddressEnabled)
+                        customer.StreetAddress = model.StreetAddress;
+                    if (_customerSettings.StreetAddress2Enabled)
+                        customer.StreetAddress2 = model.StreetAddress2;
+                    if (_customerSettings.ZipPostalCodeEnabled)
+                        customer.ZipPostalCode = model.ZipPostalCode;
+                    if (_customerSettings.CityEnabled)
+                        customer.City = model.City;
+                    if (_customerSettings.CountyEnabled)
+                        customer.County = model.County;
+                    if (_customerSettings.CountryEnabled)
+                        customer.CountryId = model.CountryId;
+                    if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
+                        customer.StateProvinceId = model.StateProvinceId;
+                    if (_customerSettings.PhoneEnabled)
+                        customer.Phone = model.Phone;
+                    if (_customerSettings.FaxEnabled)
+                        customer.Fax = model.Fax;
+
+                    //newsletter
+                    if (_customerSettings.NewsletterEnabled)
+                    {
+                        var isNewsletterActive = _customerSettings.UserRegistrationType != UserRegistrationType.EmailValidation;
+
+                        //save newsletter value
+                        var newsletter = await _newsLetterSubscriptionService.GetNewsLetterSubscriptionByEmailAndStoreIdAsync(customerEmail, store.Id);
+                        if (newsletter != null)
                         {
-                            var customer = _customerSettings.UsernamesEnabled
-                                ? await _customerService.GetCustomerByUsernameAsync(model.Username)
-                                : await _customerService.GetCustomerByEmailAsync(model.Email);
-
-                            if ((await _workContext.GetCurrentCustomerAsync())?.Id != customer.Id)
+                            if (model.Newsletter)
                             {
-                                //migrate shopping cart
-                                await _shoppingCartService.MigrateShoppingCartAsync(await _workContext.GetCurrentCustomerAsync(), customer, true);
+                                newsletter.Active = isNewsletterActive;
+                                await _newsLetterSubscriptionService.UpdateNewsLetterSubscriptionAsync(newsletter);
 
-                                await _workContext.SetCurrentCustomerAsync(customer);
+                                //GDPR
+                                if (_gdprSettings.GdprEnabled && _gdprSettings.LogNewsletterConsent)
+                                {
+                                    await _gdprService.InsertLogAsync(customer, 0, GdprRequestType.ConsentAgree, await _localizationService.GetResourceAsync("Gdpr.Consent.Newsletter"));
+                                }
                             }
+                            //else
+                            //{
+                            //When registering, not checking the newsletter check box should not take an existing email address off of the subscription list.
+                            //_newsLetterSubscriptionService.DeleteNewsLetterSubscription(newsletter);
+                            //}
+                        }
+                        else
+                        {
+                            if (model.Newsletter)
+                            {
+                                await _newsLetterSubscriptionService.InsertNewsLetterSubscriptionAsync(new NewsLetterSubscription
+                                {
+                                    NewsLetterSubscriptionGuid = Guid.NewGuid(),
+                                    Email = customerEmail,
+                                    Active = isNewsletterActive,
+                                    StoreId = store.Id,
+                                    CreatedOnUtc = DateTime.UtcNow
+                                });
 
-                            //sign in new customer
-                            await _authenticationService.SignInAsync(customer, model.RememberMe);
+                                //GDPR
+                                if (_gdprSettings.GdprEnabled && _gdprSettings.LogNewsletterConsent)
+                                {
+                                    await _gdprService.InsertLogAsync(customer, 0, GdprRequestType.ConsentAgree, await _localizationService.GetResourceAsync("Gdpr.Consent.Newsletter"));
+                                }
+                            }
+                        }
+                    }
+
+                    if (_customerSettings.AcceptPrivacyPolicyEnabled)
+                    {
+                        //privacy policy is required
+                        //GDPR
+                        if (_gdprSettings.GdprEnabled && _gdprSettings.LogPrivacyPolicyConsent)
+                        {
+                            await _gdprService.InsertLogAsync(customer, 0, GdprRequestType.ConsentAgree, await _localizationService.GetResourceAsync("Gdpr.Consent.PrivacyPolicy"));
+                        }
+                    }
+
+                    //GDPR
+                    //if (_gdprSettings.GdprEnabled)
+                    //{
+                    //    var consents = (await _gdprService.GetAllConsentsAsync()).Where(consent => consent.DisplayDuringRegistration).ToList();
+                    //    foreach (var consent in consents)
+                    //    {
+                    //        var controlId = $"consent{consent.Id}";
+                    //        var cbConsent = form[controlId];
+                    //        if (!StringValues.IsNullOrEmpty(cbConsent) && cbConsent.ToString().Equals("on"))
+                    //        {
+                    //            //agree
+                    //            await _gdprService.InsertLogAsync(customer, consent.Id, GdprRequestType.ConsentAgree, consent.Message);
+                    //        }
+                    //        else
+                    //        {
+                    //            //disagree
+                    //            await _gdprService.InsertLogAsync(customer, consent.Id, GdprRequestType.ConsentDisagree, consent.Message);
+                    //        }
+                    //    }
+                    //}
+
+                    //insert default address (if possible)
+                    var defaultAddress = new Address
+                    {
+                        FirstName = customer.FirstName,
+                        LastName = customer.LastName,
+                        Email = customer.Email,
+                        Company = customer.Company,
+                        CountryId = customer.CountryId > 0
+                            ? (int?)customer.CountryId
+                            : null,
+                        StateProvinceId = customer.StateProvinceId > 0
+                            ? (int?)customer.StateProvinceId
+                            : null,
+                        County = customer.County,
+                        City = customer.City,
+                        Address1 = customer.StreetAddress,
+                        Address2 = customer.StreetAddress2,
+                        ZipPostalCode = customer.ZipPostalCode,
+                        PhoneNumber = customer.Phone,
+                        FaxNumber = customer.Fax,
+                        CreatedOnUtc = customer.CreatedOnUtc
+                    };
+                    if (await _addressService.IsAddressValidAsync(defaultAddress))
+                    {
+                        //some validation
+                        if (defaultAddress.CountryId == 0)
+                            defaultAddress.CountryId = null;
+                        if (defaultAddress.StateProvinceId == 0)
+                            defaultAddress.StateProvinceId = null;
+                        //set default address
+                        //customer.Addresses.Add(defaultAddress);
+
+                        await _addressService.InsertAddressAsync(defaultAddress);
+
+                        await _customerService.InsertCustomerAddressAsync(customer, defaultAddress);
+
+                        customer.BillingAddressId = defaultAddress.Id;
+                        customer.ShippingAddressId = defaultAddress.Id;
+
+                        await _customerService.UpdateCustomerAsync(customer);
+                    }
+
+                    //notifications
+                    if (_customerSettings.NotifyNewCustomerRegistration)
+                        await _workflowMessageService.SendCustomerRegisteredStoreOwnerNotificationMessageAsync(customer,
+                            _localizationSettings.DefaultAdminLanguageId);
+
+                    //raise event       
+                    await _eventPublisher.PublishAsync(new CustomerRegisteredEvent(customer));
+                    var currentLanguage = await _workContext.GetWorkingLanguageAsync();
+
+                    switch (_customerSettings.UserRegistrationType)
+                    {
+                        case UserRegistrationType.EmailValidation:
+                            //email validation message
+                            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.AccountActivationTokenAttribute, Guid.NewGuid().ToString());
+                            await _workflowMessageService.SendCustomerEmailValidationMessageAsync(customer, currentLanguage.Id);
+
+                            return new CamelCaseActionResult(new CamelCaseResult
+                            {
+                                Data = _localizationService.GetResourceAsync("Account.Register.Result.EmailValidation", workLanguageId),
+                                StatusCode = HttpStatusCode.BadRequest,
+                            });
+
+                        case UserRegistrationType.AdminApproval:
+                            return new CamelCaseActionResult(new CamelCaseResult
+                            {
+                                Data = _localizationService.GetResourceAsync("Account.Register.Result.AdminApproval", workLanguageId),
+                                StatusCode = HttpStatusCode.BadRequest,
+                            });
+
+                        case UserRegistrationType.Standard:
+                            //send customer welcome message
+                            await _workflowMessageService.SendCustomerWelcomeMessageAsync(customer, currentLanguage.Id);
 
                             //raise event       
-                            await _eventPublisher.PublishAsync(new CustomerLoggedinEvent(customer));
+                            await _eventPublisher.PublishAsync(new CustomerActivatedEvent(customer));
 
-                            //activity log
-                            await _customerActivityService.InsertActivityAsync(customer, "PublicStore.Login",
-                                await _localizationService.GetResourceAsync("ActivityLog.PublicStore.Login"), customer);
-
-                            var infor = await this.PrepareCustomerInfo(customer);
-                            return new HttpResponseModel<object>
+                            return new CamelCaseActionResult(new CamelCaseResult
                             {
-                                Data = infor,
-                                StatusCode = HttpStatusCode.OK
-                            };
-                        }
-                    case CustomerLoginResults.CustomerNotExist:
-                        return new HttpResponseModel<object>
-                        {
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Data = false,
-                            Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.CustomerNotExist"
-                                , (await _workContext.GetWorkingLanguageAsync()).Id)
-                        };
-                    case CustomerLoginResults.Deleted:
-                        return new HttpResponseModel<object>
-                        {
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Data = false,
-                            Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.Deleted"
-                                , (await _workContext.GetWorkingLanguageAsync()).Id)
-                        };
-                    case CustomerLoginResults.NotActive:
-                        return new HttpResponseModel<object>
-                        {
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Data = false,
-                            Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.NotActive"
-                                , (await _workContext.GetWorkingLanguageAsync()).Id)
-                        };
-                    case CustomerLoginResults.NotRegistered:
-                        return new HttpResponseModel<object>
-                        {
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Data = false,
-                            Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.NotRegistered"
-                                , (await _workContext.GetWorkingLanguageAsync()).Id)
-                        };
-                    case CustomerLoginResults.LockedOut:
-                        return new HttpResponseModel<object>
-                        {
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Data = false,
-                            Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.LockedOut"
-                                , (await _workContext.GetWorkingLanguageAsync()).Id)
-                        };
-                    case CustomerLoginResults.WrongPassword:
-                    default:
-                        return new HttpResponseModel<object>
-                        {
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Data = false,
-                            Message = await _localizationService.GetResourceAsync("Account.Login.WrongCredentials"
-                                , (await _workContext.GetWorkingLanguageAsync()).Id)
-                        };
+                                Data = _localizationService.GetResourceAsync("Account.Register.Result.Standard", workLanguageId),
+                                StatusCode = HttpStatusCode.OK,
+                            });
+
+                        default:
+                            return new CamelCaseActionResult(new CamelCaseResult
+                            {
+                                Data = null,
+                                StatusCode = HttpStatusCode.BadRequest,
+                            });
+                    }
                 }
+
+                //errors
+                var errors = new List<string>();
+                foreach (var error in registrationResult.Errors)
+                    errors.Add(error);
+
+                return new CamelCaseActionResult(new CamelCaseResult
+                {
+                    Data = errors,
+                    StatusCode = HttpStatusCode.BadRequest,
+                });
             }
             catch (Exception ex)
             {
-                await _logger.ErrorAsync(ex.Message, ex, await _workContext.GetCurrentCustomerAsync());
-
-                return new HttpResponseModel<object>
+                _logger.Error(ex.Message, ex, await _workContext.GetCurrentCustomerAsync());
+                return new CamelCaseActionResult(new CamelCaseResult
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Data = false,
+                    StatusCode = HttpStatusCode.InternalServerError,
                     Exception = ex
-                };
+                });
             }
-        }
-
-        [HttpPost("PasswordRecoverySend")]
-        public async Task<HttpResponseModel<object>> PasswordRecoverySend(ParamsModel.PasswordRecoveryParamsModel model)
-        {
-            if (string.IsNullOrEmpty(model.Email))
-            {
-                return new HttpResponseModel<object>
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = await _localizationService.GetResourceAsync("Account.Login.Fields.Email.Required", (await _workContext.GetWorkingLanguageAsync()).Id)
-                };
-            }
-
-            var customer = await _customerService.GetCustomerByEmailAsync(model.Email);
-            if (customer == null || customer.Deleted || !customer.Active)
-            {
-                return new HttpResponseModel<object>
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = await _localizationService.GetResourceAsync("Account.PasswordRecovery.EmailNotFound", (await _workContext.GetWorkingLanguageAsync()).Id)
-                };
-            }
-
-            //save token and current date
-            var passwordRecoveryToken = Guid.NewGuid();
-            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.PasswordRecoveryTokenAttribute,
-                passwordRecoveryToken.ToString());
-
-            DateTime? generatedDateTime = DateTime.UtcNow;
-            await _genericAttributeService.SaveAttributeAsync(customer,
-                NopCustomerDefaults.PasswordRecoveryTokenDateGeneratedAttribute, generatedDateTime);
-
-            //send email
-            await _workflowMessageService.SendCustomerPasswordRecoveryMessageAsync(customer,
-                (await _workContext.GetWorkingLanguageAsync()).Id);
-
-            return new HttpResponseModel<object>
-            {
-                StatusCode = HttpStatusCode.OK,
-                Message = await _localizationService.GetResourceAsync("Account.PasswordRecovery.EmailHasBeenSent", (await _workContext.GetWorkingLanguageAsync()).Id)
-            };
         }
 
         #region Utillites

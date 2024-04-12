@@ -85,8 +85,7 @@ export class BaseService {
             return;
           }
 
-          const d = this._toCamelCase(result.Data);
-          resolve(<T>d);
+          resolve(<T>result.Data);
         },
         async (error) => {
           // await this.handleError(error, errorHandler, request, resolve, reject);
@@ -121,8 +120,7 @@ export class BaseService {
               return;
             }
   
-            const d = this._toCamelCase(result.Data);
-            resolve(<T>d);
+            resolve(<T>result.Data);
           },
           (error) => {
             this.handleError(error, args);
@@ -217,31 +215,6 @@ export class BaseService {
       headers = headers.append('workingLanguage', workingLanguage);
     }
     return headers;
-  }
-
-  private _toCamelCase(o) {
-    var newO, origKey, newKey, value
-    if (o instanceof Array) {
-      return o.map((value) => {
-          if (typeof value === "object") {
-            value = this._toCamelCase(value)
-          }
-          return value
-      })
-    } else {
-      newO = {}
-      for (origKey in o) {
-        if (o.hasOwnProperty(origKey)) {
-          newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString()
-          value = o[origKey]
-          if (value instanceof Array || (value !== null && value.constructor === Object)) {
-            value = this._toCamelCase(value)
-          }
-          newO[newKey] = value
-        }
-      }
-    }
-    return newO;
   }
 }
 
