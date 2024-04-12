@@ -1,9 +1,5 @@
 ﻿using System.Net;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Wordprocessing;
-using FluentMigrator.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Nop.Core;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
@@ -687,14 +683,14 @@ namespace Nop.Web.Areas.Api.Controllers
 
                             return new CamelCaseActionResult(new CamelCaseResult
                             {
-                                Data = _localizationService.GetResourceAsync("Account.Register.Result.EmailValidation", workLanguageId),
+                                Data = await _localizationService.GetResourceAsync("Account.Register.Result.EmailValidation", workLanguageId),
                                 StatusCode = HttpStatusCode.BadRequest,
                             });
 
                         case UserRegistrationType.AdminApproval:
                             return new CamelCaseActionResult(new CamelCaseResult
                             {
-                                Data = _localizationService.GetResourceAsync("Account.Register.Result.AdminApproval", workLanguageId),
+                                Data = await _localizationService.GetResourceAsync("Account.Register.Result.AdminApproval", workLanguageId),
                                 StatusCode = HttpStatusCode.BadRequest,
                             });
 
@@ -707,7 +703,7 @@ namespace Nop.Web.Areas.Api.Controllers
 
                             return new CamelCaseActionResult(new CamelCaseResult
                             {
-                                Data = _localizationService.GetResourceAsync("Account.Register.Result.Standard", workLanguageId),
+                                Data = await _localizationService.GetResourceAsync("Account.Register.Result.Standard", workLanguageId),
                                 StatusCode = HttpStatusCode.OK,
                             });
 
