@@ -46,13 +46,13 @@ export class BaseService {
     this.pubsubSvc = injector.get(NgxPubSubService);
     // this.dbService = injector.get(DbWebService);
 
-      // if (this.platform.is('capacitor')) {
-      //   this.dbService = injector.get(DbSqlService);
-      // } else {
-      //   this.dbService = injector.get(DbWebService);
-      // }
+    // if (this.platform.is('capacitor')) {
+    //   this.dbService = injector.get(DbSqlService);
+    // } else {
+    //   this.dbService = injector.get(DbWebService);
+    // }
 
-      this.dbService = injector.get(DbWebService);
+    this.dbService = injector.get(DbWebService);
   }
 
   protected getData<T>(
@@ -80,12 +80,7 @@ export class BaseService {
       });
       request.subscribe(
         (result) => {
-          if(result.StatusCode !== HttpStatusCode.Ok) {
-            reject(result.Exception);
-            return;
-          }
-
-          resolve(<T>result.Data);
+          resolve(<T>result);
         },
         async (error) => {
           // await this.handleError(error, errorHandler, request, resolve, reject);
@@ -115,12 +110,7 @@ export class BaseService {
         })
         .subscribe(
           (result) => {
-            if(result.StatusCode !== HttpStatusCode.Ok) {
-              reject(result.Exception);
-              return;
-            }
-  
-            resolve(<T>result.Data);
+            resolve(<T>result);
           },
           (error) => {
             this.handleError(error, args);
@@ -228,8 +218,8 @@ export class HttpParams {
 }
 
 export interface ApiResponse {
-  StatusCode: number
-  Message: any
-  Data: any
-  Exception: any
+  statusCode: number;
+  message: any;
+  data: any;
+  exception: any;
 }

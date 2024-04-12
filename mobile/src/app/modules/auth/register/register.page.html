@@ -1,0 +1,126 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Register</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">register</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="container ion-padding">
+    <form [formGroup]="formGroup" (ngSubmit)="onFormSubmitted(formGroup.value)">
+      <div class="inputs">
+        <div class="input-container">
+          <ion-item>
+            <ion-input
+              formControlName="fullname"
+              label-placement="floating"
+              fill="outline"
+              mode="md"
+            >
+              <div slot="label">
+                Fullname<ion-text color="danger">*</ion-text>
+              </div>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-container">
+          <ion-item>
+            <ion-input
+              formControlName="email"
+              label-placement="floating"
+              fill="outline"
+              mode="md"
+            >
+              <div slot="label">Email<ion-text color="danger">*</ion-text></div>
+            </ion-input>
+          </ion-item>
+        </div>
+        <div class="input-container">
+          <ion-item>
+            <ion-label position="floating"></ion-label>
+            <ion-input
+              formControlName="businessName"
+              label-placement="floating"
+              fill="outline"
+              mode="md"
+            >
+              <div slot="label">
+                Company/Business Name <ion-text color="danger">*</ion-text>
+              </div>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-container">
+          <ion-item>
+            <ion-input
+              label="Business Logo"
+              formControlName="businessLogo"
+              type="file"
+            >
+            </ion-input>
+          </ion-item>
+        </div>
+        <div class="input-container">
+          <ion-item>
+            <ion-input
+              label="Business video"
+              formControlName="businessVideo"
+              type="file"
+            >
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-container">
+          <ion-item>
+            <ion-toggle formControlName="registeringAsBusiness"
+              >Are you registering as business?*</ion-toggle
+            >
+          </ion-item>
+        </div>
+        <div class="input-container">
+          <ion-item>
+            <ion-label position="floating"> </ion-label>
+            <ion-input
+              type="password"
+              formControlName="password"
+              label-placement="floating"
+              fill="outline"
+              mode="md"
+            >
+              <div slot="label">
+                Password<ion-text color="danger">*</ion-text>
+              </div>
+            </ion-input>
+          </ion-item>
+        </div>
+        <div class="input-container">
+          <ion-item>
+            <ion-input
+              type="password"
+              label-placement="floating"
+              fill="outline"
+              mode="md"
+              formControlName="confirmPassword"
+            >
+              <div slot="label">
+                Confirm Password<ion-text color="danger">*</ion-text>
+              </div>
+            </ion-input>
+          </ion-item>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <ion-button type="submit">Register </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

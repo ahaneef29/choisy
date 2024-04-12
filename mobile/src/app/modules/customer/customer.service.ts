@@ -54,4 +54,11 @@ export class CustomerService extends BaseService {
   putCustomerLocal(customer: ICustomer) {
     return this.dbService.putLocal(this.schemaSvc.tables.customer, customer);
   }
+
+  async register(customer) {
+    return this.postData({
+      url: `Customer/Register`,
+      body: customer,
+    });
+  }
 }
