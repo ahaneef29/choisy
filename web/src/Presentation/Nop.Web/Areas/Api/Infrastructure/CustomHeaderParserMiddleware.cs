@@ -37,7 +37,8 @@ namespace Nop.Web.API.Infrastructure
 
             var currentPath = httpContext.Request.Path.Value.ToLower();
             if (currentPath.Contains("getguestcustomer")
-                || currentPath.Contains("getdefaultstorecategories"))
+                || currentPath.Contains("getdefaultstorecategories")
+                || currentPath.Contains("test"))
             {
                 await _next(httpContext);
                 return;

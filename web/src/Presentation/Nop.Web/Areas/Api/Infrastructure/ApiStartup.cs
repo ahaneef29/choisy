@@ -18,7 +18,6 @@ namespace Nop.Web.API.Infrastructure
             application.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
             {
                 appBuilder.UseHeaderParser();
-
             });
         }
 
