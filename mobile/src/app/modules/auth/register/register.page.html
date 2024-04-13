@@ -1,13 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Register</ion-title>
+    <ion-title>{{'customer.register' | localizedresource | async}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">register</ion-title>
+      <ion-title size="large"
+        >{{'customer.register' | localizedresource | async}}</ion-title
+      >
     </ion-toolbar>
   </ion-header>
 
@@ -23,7 +25,10 @@
               mode="md"
             >
               <div slot="label">
-                Fullname<ion-text color="danger">*</ion-text>
+                {{'customer.fullname' | localizedresource | async}}<ion-text
+                  color="danger"
+                  >*</ion-text
+                >
               </div>
             </ion-input>
           </ion-item>
@@ -37,7 +42,12 @@
               fill="outline"
               mode="md"
             >
-              <div slot="label">Email<ion-text color="danger">*</ion-text></div>
+              <div slot="label">
+                {{'customer.email' | localizedresource | async}}<ion-text
+                  color="danger"
+                  >*</ion-text
+                >
+              </div>
             </ion-input>
           </ion-item>
         </div>
@@ -51,7 +61,8 @@
               mode="md"
             >
               <div slot="label">
-                Company/Business Name <ion-text color="danger">*</ion-text>
+                {{'customer.companyOrBusinessName' | localizedresource |
+                async}}<ion-text color="danger">*</ion-text>
               </div>
             </ion-input>
           </ion-item>
@@ -81,7 +92,8 @@
         <div class="input-container">
           <ion-item>
             <ion-toggle formControlName="registeringAsBusiness"
-              >Are you registering as business?*</ion-toggle
+              >{{'customer.areYourRegisteringAsBusiness' | localizedresource |
+              async}}</ion-toggle
             >
           </ion-item>
         </div>
@@ -96,7 +108,8 @@
               mode="md"
             >
               <div slot="label">
-                Password<ion-text color="danger">*</ion-text>
+                {{'customer.password' | localizedresource | async}}
+                <ion-text color="danger">*</ion-text>
               </div>
             </ion-input>
           </ion-item>
@@ -111,7 +124,8 @@
               formControlName="confirmPassword"
             >
               <div slot="label">
-                Confirm Password<ion-text color="danger">*</ion-text>
+                {{'customer.confirmPassword' | localizedresource |
+                async}}<ion-text color="danger">*</ion-text>
               </div>
             </ion-input>
           </ion-item>
@@ -119,7 +133,9 @@
       </div>
 
       <div class="button-container">
-        <ion-button type="submit">Register </ion-button>
+        <ion-button type="submit" [disabled]="!formGroup.valid"
+          >{{'customer.register' | localizedresource | async}}
+        </ion-button>
       </div>
     </form>
   </div>
