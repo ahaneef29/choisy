@@ -19,9 +19,9 @@ export class LocalizationService {
       langPromise.then(async (workingLanguage) => {
         workingLanguage = workingLanguage || 'en';
 
-        // if (!this.localizedStrings) {
-        //   await this.parseResourceFile(workingLanguage);
-        // }
+        if (!this.localizedStrings) {
+          await this.parseResourceFile(workingLanguage);
+        }
 
         let resourceValue = null;
         if (this.localizedStrings.hasOwnProperty(keyString)) {
@@ -31,8 +31,8 @@ export class LocalizationService {
             this.localizedStrings,
             keyString
           );
-          // if(!resourceValue) {
-          //     debugger;
+          // if (!resourceValue) {
+          //   debugger;
           // }
         }
         if (resourceValue) {
@@ -44,12 +44,12 @@ export class LocalizationService {
     });
   }
 
-  // async parseResourceFile(workingLanguage) {
-  //   const resources = await import(
-  //     `../../../assets/localization/${workingLanguage}/localize.json`
-  //   );
-  //   this.localizedStrings = resources.default;
-  // }
+  async parseResourceFile(workingLanguage) {
+    const resources = await import(
+      `../../../assets/localization/${workingLanguage}/localize.json`
+    );
+    this.localizedStrings = resources.default;
+  }
 
   private getPropertyByKeyPath(targetObj, keyPath) {
     var keys = keyPath.split('.');
