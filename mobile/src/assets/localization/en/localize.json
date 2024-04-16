@@ -43,7 +43,7 @@
     "fullname": "Fullname",
     "email": "Email",
     "companyOrBusinessName": "Company or business name",
-    "areYourRegisteringAsBusiness": "Are you registering as business?*",
+    "areYourRegisteringAsBusiness": "Are you registering as business?",
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "register": "Register"
