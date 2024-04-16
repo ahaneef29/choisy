@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
     <ion-title>{{'customer.register' | localizedresource | async}}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -89,11 +92,18 @@
           </ion-item>
         </div>
 
-        <div class="input-container">
+        <div class="input-container toggle-container">
           <ion-item>
-            <ion-toggle formControlName="registeringAsBusiness"
-              >{{'customer.areYourRegisteringAsBusiness' | localizedresource |
-              async}}</ion-toggle
+            <p>
+              {{'customer.areYourRegisteringAsBusiness' | localizedresource |
+              async}}
+            </p>
+            <ion-toggle
+              slot="end"
+              justify="end"
+              formControlName="registeringAsBusiness"
+            >
+              Yes/No</ion-toggle
             >
           </ion-item>
         </div>
