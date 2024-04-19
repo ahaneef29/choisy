@@ -51,6 +51,7 @@ export class RegisterPage extends BasePage implements OnInit {
      }),
     });
 
+    this.formGroup.addValidators(CustomValidator.confirmPasswordValidator)
   }
 
   private _preFillForm() {

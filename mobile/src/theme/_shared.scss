@@ -111,6 +111,13 @@ app-register {
                 }
               }
             }
+
+            .error-message{
+              color: #ff6565;
+              position: absolute;
+              bottom: 0;
+              font-size: 10px;
+            }
           }
           .small-inputs {
             display: flex;
