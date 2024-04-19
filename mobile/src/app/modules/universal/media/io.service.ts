@@ -9,13 +9,13 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class IoService {
-    private IMAGE_DIR = 'stored-images';
+    private FILES_DIR = 'stored-files';
 
     constructor(private platform: Platform) {
 
     }
 
-    async selectImage(args?: { fileName?: string }) {
+    async promptAndGetImage(args?: { fileName?: string }) {
         if(!args) {
             args = {};
         }
@@ -38,11 +38,11 @@ export class IoService {
 
     // Create a new file from a capture image
     async saveImage(args: { photo: Photo, fileName?: string }) {
-        const base64Data = await this.readAsBase64(args.photo);
+        const base64Data = await this._readAsBase64(args.photo);
      
         const fileName = `${args.fileName || new Date().getTime()}.jpeg`;
         const savedFile = await Filesystem.writeFile({
-            path: `${this.IMAGE_DIR}/${fileName}`,
+            path: `${this.FILES_DIR}/${fileName}`,
             data: base64Data,
             directory: Directory.Data,
             recursive: true
@@ -55,18 +55,18 @@ export class IoService {
         let result: ReaddirResult;
         try {
             result = await Filesystem.readdir({
-                path: this.IMAGE_DIR,
+                path: this.FILES_DIR,
                 directory: Directory.Data,
             });
         } catch(e) {
             // Folder does not yet exists!
             await Filesystem.mkdir({
-                path: this.IMAGE_DIR,
+                path: this.FILES_DIR,
                 directory: Directory.Data,
             });
         } finally {
             result = await Filesystem.readdir({
-                path: this.IMAGE_DIR,
+                path: this.FILES_DIR,
                 directory: Directory.Data,
             });
         }
@@ -78,7 +78,7 @@ export class IoService {
     async loadFileData(fileNames: string[], webPath?) {
         const images: IFileData[] = [];
         for (let f of fileNames) {
-            const filePath = `${this.IMAGE_DIR}/${f}`;
+            const filePath = `${this.FILES_DIR}/${f}`;
         
             const readFile = await Filesystem.readFile({
                 path: filePath,
@@ -101,7 +101,7 @@ export class IoService {
         return images;
     }
     // https://ionicframework.com/docs/angular/your-first-app/3-saving-photos
-    private async readAsBase64(photo: Photo) {
+    private async _readAsBase64(photo: Photo) {
         if (this.platform.is('hybrid')) {
             const file = await Filesystem.readFile({
                 path: photo.path!
