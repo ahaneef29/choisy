@@ -288,7 +288,9 @@ export class AppComponent {
         (cr) => cr.systemName == CustomerRoleSystemName.Guests
       );
       if (guestCustomerRole.length) {
-        this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer(ce);
+        this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer(
+          ce
+        );
       }
     }
 
@@ -297,9 +299,12 @@ export class AppComponent {
       customer: this.currentCustomer,
       shouldFetchCart: false,
     });
-     
+
     if (AppConstant.DEBUG) {
-      console.log('AppComponent: initializeApp: currentUser', this.currentCustomer);
+      console.log(
+        'AppComponent: initializeApp: currentUser',
+        this.currentCustomer
+      );
     }
 
     // if (this.splashScreen) {
@@ -328,6 +333,7 @@ export class AppComponent {
     const url = this.router.routerState.snapshot.url;
     const ignoreRoutes = ['privacy', 'feedback'];
     const exists = ignoreRoutes.filter((r) => url.includes(r));
+
     if (exists.length) {
       return;
     }
@@ -340,7 +346,6 @@ export class AppComponent {
       await this._navigateTo(this.existingRouteUrl);
       return;
     }
-
     await this._navigateTo('/home');
   }
 

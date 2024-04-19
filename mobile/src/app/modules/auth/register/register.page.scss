@@ -1,0 +1,17 @@
+app-register {
+  .input-container {
+    &.toggle-container {
+      p { 
+        font-weight: bold;
+        font-size: 14px;
+      }
+      ion-toggle {
+        width: auto;
+        font-weight: bold;
+        font-size: 14px;
+        --track-background-checked: #0dc9bb;
+        --handle-background-checked: #fff;
+      }
+    }
+  }
+}
