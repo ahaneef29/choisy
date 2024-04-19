@@ -86,7 +86,7 @@ app-register {
 
               &.ion-dirty,
               &.ion-valid {
-                border-color: #0dc9bb;
+                border-color: var(--color-primary);
                 ion-label {
                   background-image: linear-gradient(
                     to top,
