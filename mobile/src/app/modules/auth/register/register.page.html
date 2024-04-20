@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{'customer.register' | localizedresource | async}}</ion-title>
+    <ion-title>{{'customer.register.title' | localizedresource | async}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -145,7 +145,7 @@
 
       <div class="button-container">
         <ion-button type="submit" [disabled]="!formGroup.valid"
-          >{{'customer.register' | localizedresource | async}}
+          >{{'customer.register.title' | localizedresource | async}}
         </ion-button>
       </div>
     </form>

@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AppSettingService } from '../universal/app-setting.service';
 import { CustomerConstant } from './customer-constant';
+import { ModalController } from '@ionic/angular';
+import { AuthOptionsPage } from '../auth/auth-options/auth-options.page';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CustomerSettingService extends AppSettingService {
-  constructor() {
+  constructor(
+    private modalCtrl: ModalController
+  ) {
     super();
   }
 
@@ -110,5 +114,47 @@ export class CustomerSettingService extends AppSettingService {
         return loggedInMethod;
       }
     );
+  }
+
+
+  async canActivate() {
+    const user = await this.getCurrentCustomerEmail();
+    if (user) {
+      return true;
+    }
+
+    await this.displayAuthModal();
+    return false;
+  }
+
+  async displayAuthModal(args?: {
+    viewStep?;
+    resetPasswordToken?;
+    waitForDismiss?;
+  }) {
+    if (!args) {
+      args = {};
+    }
+
+    return new Promise<any>(async (resolve, reject) => {
+      const modal = await this.modalCtrl.create({
+        component: AuthOptionsPage,
+        componentProps: {
+          ...args,
+        },
+        cssClass: 'auth-options',
+        backdropDismiss: false,
+        mode: 'md',
+      });
+      await modal.present();
+
+      if (!args?.waitForDismiss) {
+        resolve(null);
+        return;
+      }
+
+      const { data } = await modal.onDidDismiss();
+      resolve(data);
+    });
   }
 }
