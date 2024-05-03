@@ -1,20 +1,38 @@
-.media-container {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    position: relative;
-
-    .media-thumbnail {
-        width: 120px;
-        height: 120px;
+app-register {
+  .input-container {
+    &.toggle-container {
+      p { 
+        font-weight: bold;
+        font-size: 14px;
+      }
+      ion-toggle {
+        width: auto;
+        font-weight: bold;
+        font-size: 14px;
+        --track-background-checked: var(--color-primary);
+        --handle-background-checked: #fff;
+      }
     }
-
-    .media-delete {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 24px;
-        height: 24px;
-        padding: 5px;
+    
+    .media-container {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      position: relative;
+  
+      .media-thumbnail {
+          width: 120px;
+          height: 120px;
+      }
+  
+      .media-delete {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 24px;
+          height: 24px;
+          padding: 5px;
+      }
     }
+  }
 }

@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
     <ion-title>{{'customer.register' | localizedresource | async}}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -99,12 +102,20 @@
             <div>JPG, PNG extensions of no more than 500 KB are allowed</div>
           </ion-item>
         </div>
-        <div class="input-container">
+        <div class="input-container toggle-container">
           <ion-item>
-            <ion-toggle formControlName="registeringAsBusiness"
-              >{{'customer.areYourRegisteringAsBusiness' | localizedresource |
-              async}}</ion-toggle
+            <p>
+              {{'customer.areYourRegisteringAsBusiness' | localizedresource |
+              async}}
+            </p>
+            <ion-toggle
+              slot="end"
+              justify="end"
+              formControlName="registeringAsBusiness"
             >
+              {{'common.yes' | localizedresource | async}} / {{'common.no' |
+              localizedresource | async}}
+            </ion-toggle>
           </ion-item>
         </div>
         <div class="input-container">
@@ -134,11 +145,16 @@
               formControlName="confirmPassword"
             >
               <div slot="label">
-                {{'customer.confirmPassword' | localizedresource |
-                async}}<ion-text color="danger">*</ion-text>
+                {{'customer.confirmPassword' | localizedresource | async}}<ion-text color="danger">*</ion-text>
               </div>
             </ion-input>
           </ion-item>
+
+           @if (formGroup.errors?.['confirmPasswordError'] && formGroup.controls.confirmPassword.touched ) {
+              <span class="error-message" >
+                password does not match
+              </span>
+           } 
         </div>
       </div>
 

@@ -59,28 +59,7 @@ app-register {
                 --border-width: 0;
                 --highlight-color: none;
                 --border-color: none;
-                &.has-focus,
-                &.has-value {
-                  @at-root #{&} {
-                    border-color: #0dc9bb !important;
-                  }
-                  ion-label {
-                    background-image: linear-gradient(
-                      to top,
-                      #fff 50%,
-                      transparent 50%
-                    );
-                    transform: translate3d(10px, -10px, 0) scale(0.82);
-                    padding-right: 10px;
-                    padding-left: 10px;
-                    color: #999999;
-                    font-size: 12px;
-                  }
-                  ion-select {
-                    --padding-bottom: 0;
-                    --padding-top: 0;
-                  }
-                }
+
                 label {
                   .label-text-wrapper {
                     background: #ffffff;
@@ -105,9 +84,9 @@ app-register {
                 font-weight: bold;
               }
 
-              &.has-focus,
-              &.has-value {
-                border-color: #0dc9bb;
+              &.ion-dirty,
+              &.ion-valid {
+                border-color: var(--color-primary);
                 ion-label {
                   background-image: linear-gradient(
                     to top,
@@ -125,11 +104,19 @@ app-register {
                   --padding-top: 0;
                 }
               }
+
               &.ion-touched {
                 &.ion-invalid {
                   border-color: #ff6565;
                 }
               }
+            }
+
+            .error-message{
+              color: #ff6565;
+              position: absolute;
+              bottom: 0;
+              font-size: 10px;
             }
           }
           .small-inputs {
