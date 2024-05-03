@@ -277,7 +277,7 @@ export class AppComponent {
   private async _setDefaults() {
     const ce = await this.customerSettingSvc.getCurrentCustomerEmail();
     if (ce) {
-      this.currentCustomer = await this.customerSvc.getCustomerLocal(ce);
+      this.currentCustomer = await this.customerSettingSvc.getCustomerLocal(ce);
     }
 
     if (!this.currentCustomer) {

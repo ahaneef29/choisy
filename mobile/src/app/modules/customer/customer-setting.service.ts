@@ -3,6 +3,7 @@ import { AppSettingService } from '../universal/app-setting.service';
 import { CustomerConstant } from './customer-constant';
 import { ModalController } from '@ionic/angular';
 import { AuthOptionsPage } from '../auth/auth-options/auth-options.page';
+import { CustomerRoleSystemName, ICustomer } from './customer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -115,16 +116,59 @@ export class CustomerSettingService extends AppSettingService {
       }
     );
   }
+  
+  getCustomerLocal(
+    email?,
+    customerRole?: CustomerRoleSystemName
+  ) {
+    return new Promise<ICustomer | null>(async (resolve, reject) => {
+      if (!email) {
+        email = await this.getCurrentCustomerEmail();
+      }
 
+      email = email.toLowerCase();
+      let customer = await this.dbService.get<ICustomer>(
+        this.schemaSvc.tables.customer,
+        email
+      );
+
+      if (customerRole) {
+        const cr = customer.customerRoles.filter(
+          (c) => c.systemName == customerRole
+        );
+        if (!cr.length) {
+          resolve(null);
+          return;
+        }
+      }
+
+      resolve(customer);
+    });
+  }
+
+  isGuest(email?) {
+    return this.getCustomerLocal(email, CustomerRoleSystemName.Guests) != null;
+  }
 
   async canActivate() {
-    const user = await this.getCurrentCustomerEmail();
-    if (user) {
-      return true;
+    let displayAuthModel = false;
+
+    const email = await this.getCurrentCustomerEmail();
+    if (!email) {
+      displayAuthModel = true;
     }
 
-    await this.displayAuthModal();
-    return false;
+    const isGuest = await this.isGuest(email);
+    if(isGuest) {
+      displayAuthModel = true;
+    }
+
+    if(displayAuthModel) {
+      await this.displayAuthModal();
+      return false;
+    }
+
+    return true;
   }
 
   async displayAuthModal(args?: {

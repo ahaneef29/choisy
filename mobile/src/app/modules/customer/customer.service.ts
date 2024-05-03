@@ -11,34 +11,6 @@ export class CustomerService extends BaseService {
     super();
   }
 
-  getCustomerLocal(
-    email?,
-    customerRole?: CustomerRoleSystemName
-  ): Promise<ICustomer> {
-    return new Promise(async (resolve, reject) => {
-      if (!email) {
-        email = await this.customerSettingSvc.getCurrentCustomerEmail();
-      }
-
-      email = email.toLowerCase();
-      let customer = await this.dbService.get<ICustomer>(
-        this.schemaSvc.tables.customer,
-        email
-      );
-      if (customerRole) {
-        const cr = customer.customerRoles.filter(
-          (c) => c.systemName == customerRole
-        );
-        if (!cr.length) {
-          resolve(email);
-          return;
-        }
-      }
-
-      resolve(customer);
-    });
-  }
-
   getAndSetGuestCustomer(token?) {
     return this.getData<ICustomer>('Customer/GetGuestCustomer').then(
       async (gc) => {
