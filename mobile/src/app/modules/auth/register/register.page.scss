@@ -9,7 +9,7 @@ app-register {
         width: auto;
         font-weight: bold;
         font-size: 14px;
-        --track-background-checked: #0dc9bb;
+        --track-background-checked: var(--ion-color-primary);
         --handle-background-checked: #fff;
       }
     }

@@ -87,7 +87,7 @@ app-register {
     
               &.ion-dirty,
               &.ion-valid {
-                border-color: #0dc9bb;
+                border-color: var(--ion-color-primary);;
                 ion-label {
                   background-image: linear-gradient(
                     to top,
@@ -135,7 +135,7 @@ app-register {
           text-align: end;
     
           ion-button {
-            --background: #0dc9bb;
+            --background: var(--ion-color-primary);
             width: 100%;
             // margin: 50px 0 50px 16px;
             ion-label {
@@ -253,7 +253,7 @@ app-register {
 
       &.ion-dirty,
       &.ion-valid {
-        border-color: #0dc9bb;
+        border-color: var(--ion-color-primary);
         ion-label {
           background-image: linear-gradient(
             to top,
@@ -387,17 +387,17 @@ app-register {
       }
 
       ion-label{
-        color: #0dc9bb;
+        color: var(--ion-color-primary);
   
       }
     }
 
     ion-label{
-      color: #0dc9bb;
+      color: var(--ion-color-primary);
     }
     ion-button {
       text-transform: uppercase;
-      border: 1px solid #0dc9bb;
+      border: 1px solid var(--ion-color-primary);
       margin-bottom: 10px;
 
       ion-icon {
@@ -408,7 +408,7 @@ app-register {
 
   .other-buttons{
     ion-label{
-      color: #0dc9bb;
+      color: var(--ion-color-primary);
     }
   }
 }

@@ -14,16 +14,27 @@
 
       @default {
     <!-- Login -->
-      <form  class="custom-form" [formGroup]="formGroup">
-        
+      <form class="custom-form" [formGroup]="formGroup">
         @if (viewStep === AuthOptionsViewStep.Slider) {
-          <ng-container >
+          <ng-container>
+            <div class="icon-container">
+              <ion-icon name="user-register"></ion-icon>
+            </div>
             <div class="form-buttons">
+              <ion-button expand="full" fill="clear">
+                <ion-icon name="logo-google"></ion-icon>
+                <ion-label>{{'customer.login.continue_with_google' | localizedresource | async}}</ion-label>
+            </ion-button>
+            <ion-button expand="full" fill="clear" (click)="onLoginButtonClicked(loginTypeEnum.FACEBOOK)">
+                <ion-icon name="logo-facebook"></ion-icon>
+                <ion-label>{{'customer.login.continue_with_facebook' | localizedresource | async}}</ion-label>
+            </ion-button>
               <ion-button
                 expand="full"
                 fill="clear"
                 (click)="onGoToStepClicked(AuthOptionsViewStep.Email)"
               >
+              <ion-icon name="email"></ion-icon>
                 <ion-label
                   >{{'customer.login.continue_with_email' | localizedresource |
                   async}}</ion-label
