@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { AppSettingService } from '../universal/app-setting.service';
 import { CustomerConstant } from './customer-constant';
 import { ModalController } from '@ionic/angular';
-import { AuthOptionsPage } from '../auth/auth-options/auth-options.page';
 import { CustomerRoleSystemName, ICustomer } from './customer.model';
+import { AuthOptionsPage } from '../auth/auth-options/auth-options.page';
 
 @Injectable({
   providedIn: 'root',
