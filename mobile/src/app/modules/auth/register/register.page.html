@@ -135,11 +135,16 @@
               formControlName="confirmPassword"
             >
               <div slot="label">
-                {{'customer.confirmPassword' | localizedresource |
-                async}}<ion-text color="danger">*</ion-text>
+                {{'customer.confirmPassword' | localizedresource | async}}<ion-text color="danger">*</ion-text>
               </div>
             </ion-input>
           </ion-item>
+
+           @if (formGroup.errors?.['confirmPasswordError'] && formGroup.controls.confirmPassword.touched ) {
+              <span class="error-message" >
+                password does not match
+              </span>
+           } 
         </div>
       </div>
 
