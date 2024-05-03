@@ -46,6 +46,52 @@
     "areYourRegisteringAsBusiness": "Are you registering as business?",
     "password": "Password",
     "confirmPassword": "Confirm Password",
-    "register": "Register"
+    "company": "Company",
+    "mobile": "Mobile",
+    "mobileEnter": "Enter your mobile number",
+    "change_password_title": "Chnage Password",
+    "submit":"Submit",
+    "confirm_password": "Confirm password",
+    "enter_email": "Enter your email",
+    "enter_password": "Enter your password",
+    "forgot_password": "Forgot password?",
+    "forgot_password_sent": "We have sent you a reset password link to your registered email",
+    "logout": "Log out",
+    "already_exist": "Your account already exists",
+    "already_registered_normal_auth": "You are registered using normal authentication. You cannot register again using social authentication",
+    "cannot_register": "You cannot register at this moment. Please try again later",
+    "login": {
+        "title": "Login",
+        "continue_with_email": "Continue with Email",
+        "continue_with_google": "Continue with Google",
+        "continue_with_facebook": "Continue with Facebook",
+        "save_favorite_items": "Save all your favorite items in one place",
+        "report_invoice": "Report your rates",
+        "logged_in": "You are now logged in",
+        "logged_out": "You are now logged out",
+        "usernameOrPasswordWrong": "username or password is wrong"
+    },
+    "register": {
+        "title": "Register"
+    },
+    "profile": {
+        "title": "Profile",
+        "change_password" : "Change password",
+        "user_listing" : "User Listing",
+        "my_trips": "My Trips",
+        "feedback":{
+            "title": "Feedback",
+            "name": "Name",
+            "email": "Email",
+            "message": "Message"
+        }
+    },
+    "privacy": {
+        "title": "Privacy"
+    },
+    "trips": {
+        "title": "My Trips"
+    }
   }
+
 }

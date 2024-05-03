@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BasePage } from '../modules/universal/base.page';
+import { CustomerSettingService } from '../modules/customer/customer-setting.service';
 
 @Component({
   selector: 'app-tabs',
@@ -8,12 +9,19 @@ import { BasePage } from '../modules/universal/base.page';
 })
 export class TabsPage extends BasePage implements OnInit  {
 
-  constructor() {
+  constructor(
+    private cutomerSettingSvc: CustomerSettingService
+  ) {
     super();
   }
   async ngOnInit(){
 
     ''
   }
+
+  async onTabClicked(tabs: string) {
+    await this.cutomerSettingSvc.canActivate();
+  }
+    
 
 }

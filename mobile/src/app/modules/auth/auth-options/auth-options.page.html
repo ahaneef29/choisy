@@ -1,0 +1,147 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss(null)">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <div class="container">
+    @switch (viewStep) {
+
+      @default {
+    <!-- Login -->
+      <form class="custom-form" [formGroup]="formGroup">
+        @if (viewStep === AuthOptionsViewStep.Slider) {
+          <ng-container>
+            <div class="icon-container">
+              <ion-icon name="user-register"></ion-icon>
+            </div>
+            <div class="form-buttons">
+              <ion-button expand="full" fill="clear">
+                <ion-icon name="logo-google"></ion-icon>
+                <ion-label>{{'customer.login.continue_with_google' | localizedresource | async}}</ion-label>
+            </ion-button>
+            <ion-button expand="full" fill="clear" (click)="onLoginButtonClicked(loginTypeEnum.FACEBOOK)">
+                <ion-icon name="logo-facebook"></ion-icon>
+                <ion-label>{{'customer.login.continue_with_facebook' | localizedresource | async}}</ion-label>
+            </ion-button>
+              <ion-button
+                expand="full"
+                fill="clear"
+                (click)="onGoToStepClicked(AuthOptionsViewStep.Email)"
+              >
+              <ion-icon name="email"></ion-icon>
+                <ion-label
+                  >{{'customer.login.continue_with_email' | localizedresource |
+                  async}}</ion-label
+                >
+              </ion-button>
+            </div>
+          </ng-container>
+        }
+
+        <!-- Username -->
+        @if (viewStep === AuthOptionsViewStep.Email) {
+          <ng-container >
+            <div class="icon-container">
+              <ion-icon ios="email" md="email"></ion-icon>
+            </div>
+            <div class="input-container">
+              <ion-item>
+                <ion-input
+                  formControlName="email"
+                  label-placement="floating"
+                  fill="outline"
+                  mode="md"
+                >
+                  <div slot="label">
+                    {{'customer.email' | localizedresource | async}}<ion-text
+                      color="danger"
+                      >*</ion-text
+                    >
+                  </div>
+                </ion-input>
+              </ion-item>
+            </div>
+            <div class="form-buttons">
+              <ion-button
+              [disabled]="!formGroup.controls['email'].valid"
+                expand="full"
+                fill="clear"
+                (click)="onGoToStepClicked(AuthOptionsViewStep.Password, true)"
+              >
+                <ion-label>{{'common.next' | localizedresource | async}}</ion-label>
+              </ion-button>
+            </div>
+          </ng-container>
+        }  
+        <!-- Password -->
+        @if (viewStep === AuthOptionsViewStep.Password) {
+          <ng-container >
+            <div class="icon-container">
+              <ion-icon ios="password" md="password"></ion-icon>
+            </div>
+            <div class="input-container">
+              <ion-item>
+                <ion-input
+                  formControlName="password"
+                  label-placement="floating"
+                  fill="outline"
+                  mode="md"
+                >
+                  <div slot="label">
+                    {{'customer.enter_password' | localizedresource | async}}
+                    <ion-text
+                      color="danger"
+                      >*</ion-text
+                    >
+                  </div>
+                </ion-input>
+              </ion-item>
+            </div>
+            <div class="form-buttons">
+              <ion-button
+                expand="full"
+                fill="clear"
+                [disabled]="!formGroup.controls['password'].valid"
+
+              >
+                <ion-label
+                  >{{'customer.login.title' | localizedresource | async}}</ion-label
+                >
+              </ion-button>
+            </div>
+          </ng-container>
+        }
+
+        <div class="other-buttons">
+          <ion-button
+            fill="clear"
+            class="button-no-border"
+          >
+            <ion-label
+              >{{'customer.forgot_password' | localizedresource | async}}</ion-label
+            >
+          </ion-button>
+    
+          <ion-button
+            fill="clear"
+            class="button-no-border"
+            (click)="onGoToUrlClicked('/register')"
+          >
+            <ion-label
+              >{{'customer.register.title' | localizedresource | async}}</ion-label
+            >
+          </ion-button>
+        </div>
+        
+      </form> 
+      }
+    }
+
+  </div>
+</ion-content>
