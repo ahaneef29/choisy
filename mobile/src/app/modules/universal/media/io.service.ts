@@ -1,8 +1,8 @@
+import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { Directory, Filesystem, ReaddirResult } from '@capacitor/filesystem';
-import { Injectable } from '@angular/core';
 
 //https://devdactic.com/ionic-image-upload-capacitor/
 @Injectable({
@@ -15,7 +15,7 @@ export class IoService {
 
     }
 
-    async promptAndGetImage(args?: { fileName?: string }) {
+    async promptAndGetImage(args?: { fileName?: string, quality?: number}) {
         if(!args) {
             args = {};
         }
@@ -23,7 +23,7 @@ export class IoService {
         let image: Photo;
         try {
             image = await Camera.getPhoto({
-                quality: 90,
+                quality: args.quality || 100,
                 allowEditing: false,
                 resultType: CameraResultType.Uri,
                 source: CameraSource.Photos // Camera, Photos or Prompt!
@@ -34,6 +34,20 @@ export class IoService {
         }
 
         return this.saveImage({ photo: image, fileName: args.fileName });
+    }
+
+    /**
+     * https://capawesome.io/plugins/file-picker/
+     */
+    async promptAndGetFile() {
+        // const result = await FilePicker.pickVideos();
+        // const formData = new FormData();
+        // if (file.blob) {
+        //     const rawFile = new File(file.blob, file.name, {
+        //     type: file.mimeType,
+        //     });
+        //     formData.append('file', rawFile, file.name);
+        // }
     }
 
     // Create a new file from a capture image
