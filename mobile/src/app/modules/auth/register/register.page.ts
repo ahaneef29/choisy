@@ -35,6 +35,10 @@ export class RegisterPage extends BasePage implements OnInit {
       confirmPassword: data.confirmPassword,
     };
     await this.customerSvc.register(customer);
+
+    if(AppConstant.DEBUG) {
+      this._preFillForm();
+    }
   }
 
   private _initializeForm() {
