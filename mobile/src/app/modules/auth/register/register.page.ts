@@ -39,16 +39,29 @@ export class RegisterPage extends BasePage implements OnInit {
 
   private _initializeForm() {
     this.formGroup = this.formBuilder.group<IRegistrationForm>({
-      fullname: new FormControl( '', {nonNullable: true, validators: [Validators.required]} ),
-      email: new FormControl( '', {nonNullable: true, validators: [Validators.required, Validators.email]}),
-      registeringAsBusiness: new FormControl(false, {nonNullable: true, validators: [Validators.required]} ),
-      businessName: new FormControl('', {nonNullable: true, validators: [Validators.required]} ),
-      businessLogo: new FormControl( '', {nonNullable: true}),
-      businessVideo: new FormControl('', {nonNullable: true} ),
-      password: new FormControl( '', {nonNullable: true, validators: [Validators.required]}),
+      fullname: new FormControl( '', {
+        nonNullable: true, 
+        validators: [Validators.required]
+      }),
+      email: new FormControl( '', {
+        nonNullable: true, 
+        validators: [Validators.required, Validators.email]
+      }),
+      businessName: new FormControl('', {
+        nonNullable: true, 
+        validators: [Validators.required]
+      }),
+      registeringAsBusiness: new FormControl(true, {nonNullable: true} ),
+      businessLogo: new FormControl( '', {nonNullable: false}),
+      businessVideo: new FormControl('', {nonNullable: false} ),
+      password: new FormControl( '', {
+        nonNullable: true,
+        validators: [Validators.required]
+      }),
       confirmPassword: new FormControl('', {
-        nonNullable: true, validators: [Validators.required]
-     }),
+        nonNullable: true, 
+        validators: [Validators.required]
+     }),  
     });
 
     this.formGroup.addValidators(CustomValidator.confirmPasswordValidator)
@@ -62,7 +75,6 @@ export class RegisterPage extends BasePage implements OnInit {
       this.formGroup.controls.password.setValue(`password`);
       this.formGroup.controls.confirmPassword.setValue(`password`);
       this.formGroup.controls.businessName.setValue(randomNum as any);
-      this.formGroup.controls.registeringAsBusiness.setValue(true);
     }
   }
 }
