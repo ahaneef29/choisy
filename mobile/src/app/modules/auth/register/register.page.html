@@ -70,13 +70,12 @@
             </ion-input>
           </ion-item>
         </div>
-
         <div class="input-container toggle-container">
           <ion-item>
             <p>
-              {{'customer.areYourRegisteringAsBusiness' | localizedresource | async}}
+              {{'customer.areYourRegisteringAsBusiness' | localizedresource |
+              async}}
             </p>
-            
             <ion-toggle
               slot="end"
               justify="end"
@@ -87,30 +86,39 @@
             </ion-toggle>
           </ion-item>
         </div>
-
-        @if (formGroup.controls.registeringAsBusiness.value) {
+        @if(formGroup.controls.registeringAsBusiness.value) {
           <div class="input-container">
             <ion-item>
-              <ion-input
-                label="Business Logo"
-                formControlName="businessLogo"
-                type="file"
-              >
-              </ion-input>
+              <ion-label position="floating">Business logo</ion-label>
+              <div class="media-container" (click)="onAddStoreLogoClicked()">
+                <ng-container *ngIf="!formGroup.controls.businessLogo!.value">
+                  <ion-icon class="media-thumbnail" name="image"></ion-icon>
+                </ng-container>
+                <ng-container *ngIf="formGroup.controls.businessLogo!.value">
+                  <ion-icon class="media-delete" name="trash" (click)="onAttachmentemoveClicked($event, 'businessLogo')"></ion-icon>
+                  <div class="media-thumbnail" [ngStyle]="{'background-image': ' url(' + formGroup.controls.businessLogo!.value.imageUrl + ')'} "></div>
+                </ng-container>
+              </div>
+              <!-- <div>JPG, PNG extensions of no more than 500 KB are allowed</div> -->
             </ion-item>
           </div>
           <div class="input-container">
             <ion-item>
-              <ion-input
-                label="Business video"
-                formControlName="businessVideo"
-                type="file"
-              >
-              </ion-input>
+              <ion-label position="floating">Business video</ion-label>
+              <div class="media-container" (click)="addStoreVideoFileInput.click()">
+                <input type="file" #addStoreVideoFileInput accept="*" hidden (change)="onAddStoreVideoClicked($event)"/>
+                <ng-container *ngIf="!formGroup.controls.businessVideo!.value">
+                  <ion-icon class="media-thumbnail" name="document"></ion-icon>
+                </ng-container>
+                <ng-container *ngIf="formGroup.controls.businessVideo!.value">
+                  <ion-icon class="media-delete" name="trash" (click)="onAttachmentemoveClicked($event, 'businessVideo')"></ion-icon>
+                  <ion-icon class="media-thumbnail" name="document-attach"></ion-icon>
+                </ng-container>
+              </div>
+              <!-- <div>JPG, PNG extensions of no more than 500 KB are allowed</div> -->
             </ion-item>
           </div>
         }
-        
         <div class="input-container">
           <ion-item>
             <ion-label position="floating"> </ion-label>

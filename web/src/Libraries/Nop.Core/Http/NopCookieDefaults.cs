@@ -8,7 +8,7 @@ public static partial class NopCookieDefaults
     /// <summary>
     /// Gets the cookie name prefix
     /// </summary>
-    public static string Prefix => ".Choisy";
+    public static string Prefix => ".Nop";
 
     /// <summary>
     /// Gets a cookie name of the customer

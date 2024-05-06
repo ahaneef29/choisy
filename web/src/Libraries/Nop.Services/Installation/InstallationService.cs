@@ -299,11 +299,11 @@ namespace Nop.Services.Installation
             var stores = new List<Store>
             {
                 new() {
-                    Name = "Choisy",
-                    DefaultTitle = "Choisy",
+                    Name = "Your store name",
+                    DefaultTitle = "Your store",
                     DefaultMetaKeywords = string.Empty,
                     DefaultMetaDescription = string.Empty,
-                    HomepageTitle = "Choisy",
+                    HomepageTitle = "Home page title",
                     HomepageDescription = "Home page description",
                     Url = storeUrl,
                     SslEnabled = _webHelper.IsCurrentConnectionSecured(),
@@ -2865,7 +2865,8 @@ namespace Nop.Services.Installation
                 AllowCustomersToSearchWithManufacturerName = false,
                 DisplayAllPicturesOnCatalogPages = false,
                 ProductUrlStructureTypeId = (int)ProductUrlStructureType.Product,
-                ActiveSearchProviderSystemName = string.Empty
+                ActiveSearchProviderSystemName = string.Empty,
+                UseStandardSearchWhenSearchProviderThrowsException = true
             });
 
             await settingService.SaveSettingAsync(new LocalizationSettings
@@ -3014,11 +3015,11 @@ namespace Nop.Services.Installation
                 DefaultStoreTheme = "DefaultClean",
                 AllowCustomerToSelectTheme = false,
                 DisplayEuCookieLawWarning = isEurope,
-                FacebookLink = "",
-                TwitterLink = "",
-                YoutubeLink = "",
-                InstagramLink = "",
-                HidePoweredByNopCommerce = true
+                FacebookLink = "https://www.facebook.com/nopCommerce",
+                TwitterLink = "https://twitter.com/nopCommerce",
+                YoutubeLink = "https://www.youtube.com/user/nopCommerce",
+                InstagramLink = "https://www.instagram.com/nopcommerce_official",
+                HidePoweredByNopCommerce = false
             });
 
             await settingService.SaveSettingAsync(new ExternalAuthenticationSettings

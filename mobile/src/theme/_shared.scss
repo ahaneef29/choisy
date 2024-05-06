@@ -426,3 +426,12 @@ app-register {
 ion-item {
   --inner-border-width: 0 0 0 0 !important;
 }
+
+.background-image {
+  width: 100%;
+  height: inherit;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 8px;
+}
