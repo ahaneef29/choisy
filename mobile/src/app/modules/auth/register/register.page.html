@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{'customer.register' | localizedresource | async}}</ion-title>
+    <ion-title>{{'customer.register.title' | localizedresource | async}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,7 +11,7 @@
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large"
-        >{{'customer.register' | localizedresource | async}}</ion-title
+        >{{'customer.register.title' | localizedresource | async}}</ion-title
       >
     </ion-toolbar>
   </ion-header>
@@ -75,12 +75,12 @@
           <ion-item>
             <ion-label position="floating">Business logo</ion-label>
             <div class="media-container" (click)="onAddStoreLogoClicked()">
-              <ng-container *ngIf="!formGroup.controls['businessLogo'].value">
+              <ng-container *ngIf="!formGroup.controls.businessLogo!.value">
                 <ion-icon class="media-thumbnail" name="image"></ion-icon>
               </ng-container>
-              <ng-container *ngIf="formGroup.controls['businessLogo'].value">
+              <ng-container *ngIf="formGroup.controls.businessLogo!.value">
                 <ion-icon class="media-delete" name="trash" (click)="onAttachmentemoveClicked($event, 'businessLogo')"></ion-icon>
-                <div class="media-thumbnail" [ngStyle]="{'background-image': ' url(' + formGroup.controls['businessLogo'].value.imageUrl + ')'} "></div>
+                <div class="media-thumbnail" [ngStyle]="{'background-image': ' url(' + formGroup.controls.businessLogo!.value.imageUrl + ')'} "></div>
               </ng-container>
             </div>
             <div>JPG, PNG extensions of no more than 500 KB are allowed</div>
@@ -91,10 +91,10 @@
             <ion-label position="floating">Business video</ion-label>
             <div class="media-container" (click)="addStoreVideoFileInput.click()">
               <input type="file" #addStoreVideoFileInput accept="*" hidden (change)="onAddStoreVideoClicked($event)"/>
-              <ng-container *ngIf="!formGroup.controls['businessVideo'].value">
+              <ng-container *ngIf="!formGroup.controls.businessVideo!.value">
                 <ion-icon class="media-thumbnail" name="document"></ion-icon>
               </ng-container>
-              <ng-container *ngIf="formGroup.controls['businessVideo'].value">
+              <ng-container *ngIf="formGroup.controls.businessVideo!.value">
                 <ion-icon class="media-delete" name="trash" (click)="onAttachmentemoveClicked($event, 'businessVideo')"></ion-icon>
                 <ion-icon class="media-thumbnail" name="document-attach"></ion-icon>
               </ng-container>
@@ -160,7 +160,7 @@
 
       <div class="button-container">
         <ion-button type="submit" [disabled]="!formGroup.valid"
-          >{{'customer.register' | localizedresource | async}}
+          >{{'customer.register.title' | localizedresource | async}}
         </ion-button>
       </div>
     </form>

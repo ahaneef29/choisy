@@ -38,13 +38,14 @@ export class RegisterPage extends BasePage implements OnInit {
     };
     await this.customerSvc.register(customer);
   }
+
   async onAddStoreLogoClicked() {
     const result = await this.mediaSvc.promptAndUploadPicture();
     if(!result) {
       return;
     }
     
-    this.formGroup.controls.businessLogo.setValue(result as never);
+    this.formGroup.controls.businessLogo!.setValue(result as never);
   }
 
   async onAddStoreVideoClicked($event) {
@@ -58,7 +59,7 @@ export class RegisterPage extends BasePage implements OnInit {
       return;
     }
 
-    this.formGroup.controls.businessVideo.setValue(result as never);
+    this.formGroup.controls.businessVideo!.setValue(result as never);
   }
 
   async onAttachmentemoveClicked(ev, formControlName, ignorePrompt = false ) {
@@ -80,7 +81,7 @@ export class RegisterPage extends BasePage implements OnInit {
     this.formGroup  = this.formBuilder.group<IRegistrationForm>({
       fullname: new FormControl( '', {nonNullable: true, validators: [Validators.required]} ),
       email: new FormControl( '', {nonNullable: true, validators: [Validators.required, Validators.email]}),
-      registeringAsBusiness: new FormControl(false, {nonNullable: true, validators: [Validators.required]} ),
+      registeringAsBusiness: new FormControl(true, {nonNullable: true, validators: [Validators.required]} ),
       businessName: new FormControl('', {nonNullable: true, validators: [Validators.required]} ),
       businessLogo: new FormControl(null, {nonNullable: true}),
       businessVideo: new FormControl(null, {nonNullable: true} ),
@@ -101,7 +102,6 @@ export class RegisterPage extends BasePage implements OnInit {
       this.formGroup.controls.password.setValue(`password`);
       this.formGroup.controls.confirmPassword.setValue(`password`);
       this.formGroup.controls.businessName.setValue(randomNum as any);
-      this.formGroup.controls.registeringAsBusiness.setValue(true);
     }
   }
 }
