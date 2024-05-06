@@ -5,6 +5,8 @@ app-register {
       form {
         .inputs {
           .input-container {
+            position: relative;
+
             &.link-container {
               ion-item {
                 ion-icon {
@@ -20,7 +22,7 @@ app-register {
             }
             ion-item {
               --highlight-background: none;
-              --min-height: 48px;
+              --min-height: 56px;
               --background: #fff;
               border: 1px solid #ebedef;
               margin: 25px 0;
@@ -116,7 +118,7 @@ app-register {
             .error-message{
               color: #ff6565;
               position: absolute;
-              bottom: 0;
+              bottom: -16px;
               font-size: 10px;
             }
           }
