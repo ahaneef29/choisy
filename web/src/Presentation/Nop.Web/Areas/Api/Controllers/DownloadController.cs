@@ -60,10 +60,6 @@ public partial class DownloadController : BaseApiController
             : string.Empty;
 
         var picture = await _pictureService.InsertPictureAsync(httpPostedFile, qqFileName);
-
-        //when returning JSON the mime-type must be set to text/plain
-        //otherwise some browsers will pop-up a "Save As" dialog.
-
         if (picture == null)
             return new CamelCaseActionResult(new CamelCaseResult
             {
@@ -118,7 +114,9 @@ public partial class DownloadController : BaseApiController
 
         var contentType = httpPostedFile.ContentType;
 
-        var fileExtension = _fileProvider.GetFileExtension(fileName);
+        //var fileExtension = _fileProvider.GetFileExtension(fileName);
+        var extensions = fileName.Split('.');
+        var fileExtension = extensions[extensions.Length - 1];  //In case file name contains multiple dots, we get the last one as extension
         if (!string.IsNullOrEmpty(fileExtension))
             fileExtension = fileExtension.ToLowerInvariant();
 

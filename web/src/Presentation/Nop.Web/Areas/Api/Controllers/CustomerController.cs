@@ -1,5 +1,8 @@
 ﻿using System.Net;
+using DocumentFormat.OpenXml.EMMA;
+using LinqToDB.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Nop.Core;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
@@ -10,6 +13,7 @@ using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Messages;
 using Nop.Core.Domain.Tax;
+using Nop.Core.Domain.Vendors;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
 using Nop.Services.Authentication;
@@ -26,6 +30,7 @@ using Nop.Services.Media;
 using Nop.Services.Messages;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
+using Nop.Services.Seo;
 using Nop.Services.Tax;
 using Nop.Services.Vendors;
 using Nop.Web.API;
@@ -72,6 +77,7 @@ namespace Nop.Web.Areas.Api.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IOrderModelFactory _orderModelFactory;
         private readonly IExternalAuthenticationService _externalAuthenticationService;
+        private readonly IUrlRecordService _urlRecordService;
 
         private readonly CustomerSettings _customerSettings;
         private readonly DateTimeSettings _dateTimeSettings;
@@ -81,6 +87,7 @@ namespace Nop.Web.Areas.Api.Controllers
         private readonly ForumSettings _forumSettings;
         private readonly CurrencySettings _currencySettings;
         private readonly MediaSettings _mediaSettings;
+        private readonly VendorSettings _vendorSettings;
 
         public CustomerController()
         {
@@ -116,6 +123,7 @@ namespace Nop.Web.Areas.Api.Controllers
             this._paymentService = EngineContext.Current.Resolve<IPaymentService>();
             this._externalAuthenticationService = EngineContext.Current.Resolve<IExternalAuthenticationService>();
             this._orderModelFactory = EngineContext.Current.Resolve<IOrderModelFactory>();
+            this._urlRecordService = EngineContext.Current.Resolve<IUrlRecordService>();
 
             this._customerSettings = EngineContext.Current.Resolve<CustomerSettings>();
             this._dateTimeSettings = EngineContext.Current.Resolve<DateTimeSettings>();
@@ -125,6 +133,7 @@ namespace Nop.Web.Areas.Api.Controllers
             this._forumSettings = EngineContext.Current.Resolve<ForumSettings>();
             this._currencySettings = EngineContext.Current.Resolve<CurrencySettings>();
             this._mediaSettings = EngineContext.Current.Resolve<MediaSettings>();
+            this._vendorSettings = EngineContext.Current.Resolve<VendorSettings>();
         }
 
         #endregion
@@ -674,6 +683,8 @@ namespace Nop.Web.Areas.Api.Controllers
                     await _eventPublisher.PublishAsync(new CustomerRegisteredEvent(customer));
                     var currentLanguage = await _workContext.GetWorkingLanguageAsync();
 
+                    InsertVendor(customer, paramsModel);
+
                     switch (_customerSettings.UserRegistrationType)
                     {
                         case UserRegistrationType.EmailValidation:
@@ -740,6 +751,48 @@ namespace Nop.Web.Areas.Api.Controllers
 
         #region Utillites
 
+        private async Task InsertVendor(Customer customer, ParamsModel.RegistrationParamsModel paramsModel)
+        {
+            if (string.IsNullOrEmpty(paramsModel.BusinessName))
+                return;
+
+            //disabled by default
+            var vendor = new Vendor
+            {
+                Name = paramsModel.BusinessName,
+                Email = customer.Email,
+                //some default settings
+                PageSize = 6,
+                AllowCustomersToSelectPageSize = true,
+                PageSizeOptions = _vendorSettings.DefaultVendorPageSizeOptions,
+                PictureId = paramsModel.BusinessLogo ?? 0,
+                VideoId = paramsModel.BusinessVideo ?? 0,
+                //Description = WebUtility.HtmlEncode(description),
+                Active = true
+            };
+            await _vendorService.InsertVendorAsync(vendor);
+
+            //search engine name (the same as vendor name)
+            var seName = await _urlRecordService.ValidateSeNameAsync(vendor, vendor.Name, vendor.Name, true);
+            await _urlRecordService.SaveSlugAsync(vendor, seName, 0);
+
+            //associate to the current customer
+            //but a store owner will have to manually add this customer role to "Vendors" role
+            //if he wants to grant access to admin area
+            customer.VendorId = vendor.Id;
+            await _customerService.UpdateCustomerAsync(customer);
+
+            //update picture seo file name
+            //await UpdatePictureSeoNamesAsync(vendor);
+
+            //save vendor attributes
+            //await _genericAttributeService.SaveAttributeAsync(vendor, NopVendorDefaults.VendorAttributes, vendorAttributesXml);
+
+            //notify store owner here (email)
+            await _workflowMessageService.SendNewVendorAccountApplyStoreOwnerNotificationAsync(customer,
+                vendor, _localizationSettings.DefaultAdminLanguageId);
+        }
+
         private async Task<object> PrepareCustomerInfo(Customer customer)
         {
             var model = new
@@ -770,6 +823,12 @@ namespace Nop.Web.Areas.Api.Controllers
             return model;
         }
 
+        protected virtual async Task UpdatePictureSeoNamesAsync(Vendor vendor)
+        {
+            var picture = await _pictureService.GetPictureByIdAsync(vendor.PictureId);
+            if (picture != null)
+                await _pictureService.SetSeoFilenameAsync(picture.Id, await _pictureService.GetPictureSeNameAsync(vendor.Name));
+        }
 
         #endregion
     }

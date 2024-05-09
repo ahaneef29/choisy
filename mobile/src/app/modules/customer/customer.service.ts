@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from '../universal/base.service';
 import { CustomerRoleSystemName, ICustomer } from './customer.model';
 import { CustomerSettingService } from './customer-setting.service';
+import { IRegistrationParams } from '../auth/register/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -27,8 +28,8 @@ export class CustomerService extends BaseService {
     return this.dbService.putLocal(this.schemaSvc.tables.customer, customer);
   }
 
-  async register(customer) {
-    return this.postData({
+  async register(customer: IRegistrationParams) {
+    return this.postData<string>({
       url: `Customer/Register`,
       body: customer,
     });

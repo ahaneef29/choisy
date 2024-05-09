@@ -29,6 +29,8 @@ public partial class Vendor : BaseEntity, ILocalizedEntity, ISlugSupported, ISof
     /// </summary>
     public int PictureId { get; set; }
 
+    public int VideoId { get; set; }
+
     /// <summary>
     /// Gets or sets the address identifier
     /// </summary>

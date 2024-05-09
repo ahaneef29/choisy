@@ -16812,7 +16812,10 @@
   <LocaleResource Name="Checkout.YourOrderHasBeenSuccessfullyProcessed">
     <Value>Your order has been successfully processed!</Value>
   </LocaleResource>
-  <LocaleResource Name="Common.AddNew">
+    <LocaleResource Name="Common.Video">
+        <Value>Video</Value>
+    </LocaleResource>
+    <LocaleResource Name="Common.AddNew">
     <Value>Add new</Value>
   </LocaleResource>
   <LocaleResource Name="Common.All">
