@@ -4,7 +4,7 @@ import { BasePage } from '../../universal/base.page';
 import { CustomerService } from '../../customer/customer.service';
 import { MediaService } from '../../universal/media/media.service';
 import { AppConstant } from '../../universal/app-constant';
-import { IRegistrationForm } from './user.model';
+import { IRegistrationForm, IRegistrationParams } from './user.model';
 import { CustomValidator } from 'src/app/validators/custom-validators.validator';
 import { IAyncUploadPictureResponse, IAyncUploadResponse } from '../../universal/media/download';
 
@@ -30,13 +30,19 @@ export class RegisterPage extends BasePage implements OnInit {
   }
 
   async onFormSubmitted(data) {
-    const customer = {
+    const customer: IRegistrationParams = {
       email: data.email,
       firstName: data.fullname,
       password: data.password,
       confirmPassword: data.confirmPassword,
+      businessName: data.businessName,
+      businessLogo: data.businessLogo?.pictureId,
+      businessVideo: data.businessVideo?.downloadId,
     };
-    await this.customerSvc.register(customer);
+    const message = await this.customerSvc.register(customer);
+    this.helperSvc.presentToast(message);
+
+    this.router.navigate(['/']);
   }
 
   async onAddStoreLogoClicked() {

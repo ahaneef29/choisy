@@ -11,3 +11,13 @@ export interface IRegistrationForm {
     password: FormControl<string>;
     confirmPassword: FormControl<string>;
   }
+
+  export interface IRegistrationParams {
+    firstName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    businessName: string;
+    businessLogo: number;
+    businessVideo: number;
+}

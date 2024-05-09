@@ -40,11 +40,12 @@ namespace Nop.Web.Areas.Api.Models
         public class RegistrationParamsModel
         {
             public string FirstName { get; set; }
-            public string LastName { get; set; }
             public string Email { get; set; }
-            public string Phone { get; set; }
             public string Password { get; set; }
             public string ConfirmPassword { get; set; }
+            public string BusinessName { get; set; }
+            public int? BusinessLogo { get; set; }
+            public int? BusinessVideo { get; set; }
         }
 
         public class StoreParamsModel
