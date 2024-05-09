@@ -766,6 +766,7 @@ namespace Nop.Web.Areas.Api.Controllers
                 AllowCustomersToSelectPageSize = true,
                 PageSizeOptions = _vendorSettings.DefaultVendorPageSizeOptions,
                 PictureId = paramsModel.BusinessLogo ?? 0,
+                VideoId = paramsModel.BusinessVideo ?? 0,
                 //Description = WebUtility.HtmlEncode(description),
                 Active = true
             };
@@ -782,7 +783,7 @@ namespace Nop.Web.Areas.Api.Controllers
             await _customerService.UpdateCustomerAsync(customer);
 
             //update picture seo file name
-            await UpdatePictureSeoNamesAsync(vendor);
+            //await UpdatePictureSeoNamesAsync(vendor);
 
             //save vendor attributes
             //await _genericAttributeService.SaveAttributeAsync(vendor, NopVendorDefaults.VendorAttributes, vendorAttributesXml);
@@ -828,7 +829,6 @@ namespace Nop.Web.Areas.Api.Controllers
             if (picture != null)
                 await _pictureService.SetSeoFilenameAsync(picture.Id, await _pictureService.GetPictureSeNameAsync(vendor.Name));
         }
-
 
         #endregion
     }

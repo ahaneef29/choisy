@@ -21,8 +21,8 @@ export class MediaService extends BaseService {
               return resolve(null);
             }
 
-
-            const nameWithExtension = `${this.helperSvc.generateGuid()}.${result[0].name.split('.')[1]}`;
+            const names = result[0].name.split('.'); //might have multiple dots in a file name
+            const nameWithExtension = `${this.helperSvc.generateGuid()}.${names[names.length - 1]}`;
             const data = new FormData();
             data.append('image', result[0].blob, nameWithExtension);
             data.append('qqfilename', nameWithExtension);
@@ -53,9 +53,13 @@ export class MediaService extends BaseService {
                 //binary
                 let blob = new Blob([arrayBuffer], { type: file.type });
                 const url = `${AppConstant.BASE_API_URL}download/asyncUpload`;
-                const nameWithExtension = `${this.helperSvc.generateGuid()}.${file.name.split('.')[1]}`;
+                const names = file.name.split('.'); //might have multiple dots in a file name
+                const uuid = this.helperSvc.generateGuid();
+                const nameWithExtension = `${uuid}.${names[names.length - 1]}`;
                 const data = new FormData();
-                data.append('image', blob, nameWithExtension);
+                data.append('qquuid', uuid);
+                // data.append('qqtotalfilesize', uuid);
+                data.append('qqfile', blob, nameWithExtension);
                 data.append('qqfilename', nameWithExtension);
 
                 const response = await this.postData<IAyncUploadResponse>({

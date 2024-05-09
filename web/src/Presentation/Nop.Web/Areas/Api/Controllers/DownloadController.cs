@@ -114,7 +114,9 @@ public partial class DownloadController : BaseApiController
 
         var contentType = httpPostedFile.ContentType;
 
-        var fileExtension = _fileProvider.GetFileExtension(fileName);
+        //var fileExtension = _fileProvider.GetFileExtension(fileName);
+        var extensions = fileName.Split('.');
+        var fileExtension = extensions[extensions.Length - 1];  //In case file name contains multiple dots, we get the last one as extension
         if (!string.IsNullOrEmpty(fileExtension))
             fileExtension = fileExtension.ToLowerInvariant();
 
