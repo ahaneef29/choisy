@@ -2786,7 +2786,7 @@ namespace Nop.Services.Installation
                 ProductReviewPossibleOnlyAfterPurchasing = false,
                 NotifyStoreOwnerAboutNewProductReviews = false,
                 NotifyCustomerAboutProductReviewReply = false,
-                EmailAFriendEnabled = true,
+                EmailAFriendEnabled = false,
                 AllowAnonymousUsersToEmailAFriend = false,
                 RecentlyViewedProductsNumber = 3,
                 RecentlyViewedProductsEnabled = true,
@@ -2794,7 +2794,7 @@ namespace Nop.Services.Installation
                 NewProductsPageSize = 6,
                 NewProductsAllowCustomersToSelectPageSize = true,
                 NewProductsPageSizeOptions = "6, 3, 9",
-                CompareProductsEnabled = true,
+                CompareProductsEnabled = false,
                 CompareProductsNumber = 4,
                 ProductSearchAutoCompleteEnabled = true,
                 ProductSearchEnabled = true,
@@ -3234,7 +3234,7 @@ namespace Nop.Services.Installation
 
             await settingService.SaveSettingAsync(new BlogSettings
             {
-                Enabled = true,
+                Enabled = false,
                 PostsPageSize = 10,
                 AllowNotRegisteredUsersToLeaveComments = true,
                 NotifyAboutNewBlogComments = false,
@@ -3245,7 +3245,7 @@ namespace Nop.Services.Installation
             });
             await settingService.SaveSettingAsync(new NewsSettings
             {
-                Enabled = true,
+                Enabled = false,
                 AllowNotRegisteredUsersToLeaveComments = true,
                 NotifyAboutNewNewsComments = false,
                 ShowNewsOnMainPage = true,

@@ -134,7 +134,7 @@ public partial class InstallController : Controller
             AdminEmail = "admin@yourStore.com",
             AdminPassword = "password",
             ConfirmPassword = "password",
-            InstallSampleData = true,
+            InstallSampleData = false,
             SubscribeNewsletters = false,
             InstallRegionalResources = _appSettings.Get<InstallationConfig>().InstallRegionalResources,
             DisableSampleDataOption = _appSettings.Get<InstallationConfig>().DisableSampleData,
