@@ -415,7 +415,7 @@ namespace Nop.Services.Installation
                 FlagImageFileName = $"{defaultCulture.Name.ToLowerInvariant()[^2..]}.png",
                 Rtl = defaultCulture.TextInfo.IsRightToLeft,
                 Published = true,
-                DisplayOrder = 1
+                DisplayOrder = 2
             };
             await InsertInstallationDataAsync(defaultLanguage);
 
@@ -439,7 +439,7 @@ namespace Nop.Services.Installation
                 FlagImageFileName = $"{regionInfo.TwoLetterISORegionName.ToLowerInvariant()}.png",
                 Rtl = cultureInfo.TextInfo.IsRightToLeft,
                 Published = true,
-                DisplayOrder = 2
+                DisplayOrder = 1
             };
             await InsertInstallationDataAsync(language);
 
@@ -2556,7 +2556,7 @@ namespace Nop.Services.Installation
                     Published = true,
                     Title = "Welcome to our store",
                     Body =
-                        "<p>Online shopping is the process consumers go through to purchase products or services over the Internet. You can edit this in the admin site.</p><p>If you have questions, see the <a href=\"http://docs.nopcommerce.com/\">Documentation</a>, or post in the <a href=\"https://www.nopcommerce.com/boards/\">Forums</a> at <a href=\"https://www.nopcommerce.com\">nopCommerce.com</a></p>",
+                        "<p>Welcome to the Internet. </p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -3019,7 +3019,7 @@ namespace Nop.Services.Installation
                 TwitterLink = "https://twitter.com/nopCommerce",
                 YoutubeLink = "https://www.youtube.com/user/nopCommerce",
                 InstagramLink = "https://www.instagram.com/nopcommerce_official",
-                HidePoweredByNopCommerce = false
+                HidePoweredByNopCommerce = true
             });
 
             await settingService.SaveSettingAsync(new ExternalAuthenticationSettings
