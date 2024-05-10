@@ -456,7 +456,7 @@ namespace Nop.Services.Installation
                 await localizationService.ImportResourcesFromXmlAsync(language, streamReader);
 
                 //set this language as default
-                language.DisplayOrder = 0;
+                //language.DisplayOrder = 0;
                 await UpdateInstallationDataAsync(language);
 
                 //save progress for showing in admin panel (only for first start)
