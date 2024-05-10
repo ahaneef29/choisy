@@ -125,7 +125,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
             ManageScheduleTasks,
             ManageAppSettings,
             DisplayPrices,
-            EnableShoppingCart,
+            //EnableShoppingCart,
             EnableWishlist,
             PublicStoreAllowNavigation,
             AccessClosedStore,
@@ -194,7 +194,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
                     ManageScheduleTasks,
                     ManageAppSettings,
                     DisplayPrices,
-                    EnableShoppingCart,
+                    //EnableShoppingCart,
                     EnableWishlist,
                     PublicStoreAllowNavigation,
                     AccessClosedStore,
@@ -206,7 +206,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
                 new[]
                 {
                     DisplayPrices,
-                    EnableShoppingCart,
+                    //EnableShoppingCart,
                     EnableWishlist,
                     PublicStoreAllowNavigation
                 }
@@ -216,7 +216,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
                 new[]
                 {
                     DisplayPrices,
-                    EnableShoppingCart,
+                    //EnableShoppingCart,
                     EnableWishlist,
                     PublicStoreAllowNavigation
                 }
@@ -226,7 +226,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
                 new[]
                 {
                     DisplayPrices,
-                    EnableShoppingCart,
+                    //EnableShoppingCart,
                     EnableWishlist,
                     PublicStoreAllowNavigation,
                     EnableMultiFactorAuthentication

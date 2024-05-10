@@ -456,7 +456,7 @@ namespace Nop.Services.Installation
                 await localizationService.ImportResourcesFromXmlAsync(language, streamReader);
 
                 //set this language as default
-                language.DisplayOrder = 0;
+                //language.DisplayOrder = 0;
                 await UpdateInstallationDataAsync(language);
 
                 //save progress for showing in admin panel (only for first start)
@@ -2556,7 +2556,7 @@ namespace Nop.Services.Installation
                     Published = true,
                     Title = "Welcome to our store",
                     Body =
-                        "<p>Online shopping is the process consumers go through to purchase products or services over the Internet. You can edit this in the admin site.</p><p>If you have questions, see the <a href=\"http://docs.nopcommerce.com/\">Documentation</a>, or post in the <a href=\"https://www.nopcommerce.com/boards/\">Forums</a> at <a href=\"https://www.nopcommerce.com\">nopCommerce.com</a></p>",
+                        "<p>Welcome to the Internet. </p>",
                     TopicTemplateId = defaultTopicTemplate.Id
                 },
                 new() {
@@ -2786,7 +2786,7 @@ namespace Nop.Services.Installation
                 ProductReviewPossibleOnlyAfterPurchasing = false,
                 NotifyStoreOwnerAboutNewProductReviews = false,
                 NotifyCustomerAboutProductReviewReply = false,
-                EmailAFriendEnabled = true,
+                EmailAFriendEnabled = false,
                 AllowAnonymousUsersToEmailAFriend = false,
                 RecentlyViewedProductsNumber = 3,
                 RecentlyViewedProductsEnabled = true,
@@ -2794,7 +2794,7 @@ namespace Nop.Services.Installation
                 NewProductsPageSize = 6,
                 NewProductsAllowCustomersToSelectPageSize = true,
                 NewProductsPageSizeOptions = "6, 3, 9",
-                CompareProductsEnabled = true,
+                CompareProductsEnabled = false,
                 CompareProductsNumber = 4,
                 ProductSearchAutoCompleteEnabled = true,
                 ProductSearchEnabled = true,
@@ -3019,7 +3019,7 @@ namespace Nop.Services.Installation
                 TwitterLink = "https://twitter.com/nopCommerce",
                 YoutubeLink = "https://www.youtube.com/user/nopCommerce",
                 InstagramLink = "https://www.instagram.com/nopcommerce_official",
-                HidePoweredByNopCommerce = false
+                HidePoweredByNopCommerce = true
             });
 
             await settingService.SaveSettingAsync(new ExternalAuthenticationSettings
@@ -3234,7 +3234,7 @@ namespace Nop.Services.Installation
 
             await settingService.SaveSettingAsync(new BlogSettings
             {
-                Enabled = true,
+                Enabled = false,
                 PostsPageSize = 10,
                 AllowNotRegisteredUsersToLeaveComments = true,
                 NotifyAboutNewBlogComments = false,
@@ -3245,7 +3245,7 @@ namespace Nop.Services.Installation
             });
             await settingService.SaveSettingAsync(new NewsSettings
             {
-                Enabled = true,
+                Enabled = false,
                 AllowNotRegisteredUsersToLeaveComments = true,
                 NotifyAboutNewNewsComments = false,
                 ShowNewsOnMainPage = true,

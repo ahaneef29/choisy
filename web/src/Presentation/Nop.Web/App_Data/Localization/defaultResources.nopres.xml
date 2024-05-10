@@ -2698,7 +2698,7 @@
     <Value>The product review has been updated successfully.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products">
-    <Value>Products</Value>
+    <Value>Posts</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Added">
     <Value>The new product has been added successfully.</Value>
