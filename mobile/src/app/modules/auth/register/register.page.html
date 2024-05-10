@@ -3,6 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
+    @if (debug) {
+      <ion-buttons slot="end" >
+        <ion-button (click)="onRefreshFormClicked()">refresh</ion-button>
+        <ion-button (click)="onClearFormClicked()">clear</ion-button>
+      </ion-buttons>
+    }
     <ion-title>{{'customer.register.title' | localizedresource | async}}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -15,7 +21,6 @@
       >
     </ion-toolbar>
   </ion-header>
-
   <div class="container ion-padding">
     <form [formGroup]="formGroup" (ngSubmit)="onFormSubmitted(formGroup.value)">
       <div class="inputs">
@@ -54,6 +59,19 @@
             </ion-input>
           </ion-item>
         </div>
+ 
+        <div class="input-container toggle-container">
+          <ion-item>
+            <p>
+              {{'customer.areYourRegisteringAsBusiness' | localizedresource |async}}
+            </p>
+            <ion-toggle
+              justify="end"
+              formControlName="registeringAsBusiness"
+            >
+            </ion-toggle>
+          </ion-item>
+        </div>
         <div class="input-container">
           <ion-item>
             <ion-label position="floating"></ion-label>
@@ -64,26 +82,14 @@
               mode="md"
             >
               <div slot="label">
-                {{'customer.companyOrBusinessName' | localizedresource |
-                async}}<ion-text color="danger">*</ion-text>
+                {{'customer.companyOrBusinessName' | localizedresource |async}}
+                @if (formGroup.controls.businessName.validator) {
+                  <ion-text color="danger">
+                    *
+                  </ion-text>
+                }
               </div>
             </ion-input>
-          </ion-item>
-        </div>
-        <div class="input-container toggle-container">
-          <ion-item>
-            <p>
-              {{'customer.areYourRegisteringAsBusiness' | localizedresource |
-              async}}
-            </p>
-            <ion-toggle
-              slot="end"
-              justify="end"
-              formControlName="registeringAsBusiness"
-            >
-              {{'common.yes' | localizedresource | async}} / {{'common.no' |
-              localizedresource | async}}
-            </ion-toggle>
           </ion-item>
         </div>
         @if(formGroup.controls.registeringAsBusiness.value) {

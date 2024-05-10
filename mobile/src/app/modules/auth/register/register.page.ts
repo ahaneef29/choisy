@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BasePage } from '../../universal/base.page';
 import { CustomerService } from '../../customer/customer.service';
@@ -7,6 +7,7 @@ import { AppConstant } from '../../universal/app-constant';
 import { IRegistrationForm, IRegistrationParams } from './user.model';
 import { CustomValidator } from 'src/app/validators/custom-validators.validator';
 import { IAyncUploadPictureResponse, IAyncUploadResponse } from '../../universal/media/download';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -14,9 +15,11 @@ import { IAyncUploadPictureResponse, IAyncUploadResponse } from '../../universal
   styleUrls: ['./register.page.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class RegisterPage extends BasePage implements OnInit {
+export class RegisterPage extends BasePage implements OnInit, OnDestroy {
   formGroup!: FormGroup<IRegistrationForm>;
+  debug = AppConstant.DEBUG;
 
+  private _subscriptions = new Subscription();
   constructor(
     private formBuilder: FormBuilder,
     private customerSvc: CustomerService, private mediaSvc: MediaService
@@ -25,8 +28,15 @@ export class RegisterPage extends BasePage implements OnInit {
     this._initializeForm();
   }
 
+  ngOnDestroy(): void {
+    if(this._subscriptions) {
+      this._subscriptions.unsubscribe();
+    }
+  }
+
   ngOnInit() {
     this._preFillForm();
+    this._subscribeToToggleChanges();
   }
 
   async onFormSubmitted(data) {
@@ -36,12 +46,18 @@ export class RegisterPage extends BasePage implements OnInit {
       password: data.password,
       confirmPassword: data.confirmPassword,
       businessName: data.businessName,
+      registeringAsBusiness: data.registeringAsBusiness,
       businessLogo: data.businessLogo?.pictureId,
       businessVideo: data.businessVideo?.downloadId,
     };
-    const message = await this.customerSvc.register(customer);
-    this.helperSvc.presentToast(message);
+    try {
+      const message = await this.customerSvc.register(customer);
+      await this.helperSvc.presentToast(message);
+    } catch (error) {
+      
+    }
 
+    this.formGroup.reset();
     this.router.navigate(['/']);
   }
 
@@ -83,6 +99,14 @@ export class RegisterPage extends BasePage implements OnInit {
     this.formGroup.controls[formControlName].setValue(null);
   }
 
+  onRefreshFormClicked() {
+    this._preFillForm();
+  }
+
+  onClearFormClicked() {
+    this.formGroup.reset();
+  }
+
   private _initializeForm() {
     this.formGroup  = this.formBuilder.group<IRegistrationForm>({
       fullname: new FormControl( '', {nonNullable: true, validators: [Validators.required]} ),
@@ -109,5 +133,19 @@ export class RegisterPage extends BasePage implements OnInit {
       this.formGroup.controls.confirmPassword.setValue(`password`);
       this.formGroup.controls.businessName.setValue(randomNum as any);
     }
+  }
+
+  private _subscribeToToggleChanges() {
+    const businessName = this.formGroup.get('businessName');
+    this._subscriptions.add(
+      this.formGroup.controls.registeringAsBusiness?.valueChanges.subscribe((value: boolean) => {
+        if (value) {
+          businessName?.setValidators([Validators.required]);
+        } else {
+          businessName?.clearValidators();
+        }
+        businessName?.updateValueAndValidity({ emitEvent: false }); 
+      })
+    )
   }
 }
