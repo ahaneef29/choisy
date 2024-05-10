@@ -415,7 +415,7 @@ namespace Nop.Services.Installation
                 FlagImageFileName = $"{defaultCulture.Name.ToLowerInvariant()[^2..]}.png",
                 Rtl = defaultCulture.TextInfo.IsRightToLeft,
                 Published = true,
-                DisplayOrder = 2
+                DisplayOrder = 1
             };
             await InsertInstallationDataAsync(defaultLanguage);
 
@@ -439,7 +439,7 @@ namespace Nop.Services.Installation
                 FlagImageFileName = $"{regionInfo.TwoLetterISORegionName.ToLowerInvariant()}.png",
                 Rtl = cultureInfo.TextInfo.IsRightToLeft,
                 Published = true,
-                DisplayOrder = 1
+                DisplayOrder = 2
             };
             await InsertInstallationDataAsync(language);
 
