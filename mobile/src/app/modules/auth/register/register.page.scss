@@ -19,10 +19,14 @@ app-register {
       width: 100%;
       justify-content: center;
       position: relative;
-  
+      ion-icon{
+        color: var(--ion-color-primary);
+      }
       .media-thumbnail {
           width: 120px;
           height: 120px;
+          background-size: contain;
+          border-radius: 12px;
       }
   
       .media-delete {
