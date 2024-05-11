@@ -83,7 +83,7 @@ public partial class InstallController : Controller
             {
                 Value = $"{country.Alpha2}-{localization.Culture}",
                 Text = $"{country.Name}{lang}",
-                Selected = (localization.Culture == browserCulture) && browserCulture[^2..] == country.Alpha2
+                Selected = country.Alpha2 == "TR"
             }
             select item);
         model.AvailableCountries.AddRange(countries);
@@ -134,7 +134,7 @@ public partial class InstallController : Controller
             AdminEmail = "admin@yourStore.com",
             AdminPassword = "password",
             ConfirmPassword = "password",
-            InstallSampleData = true,
+            InstallSampleData = false,
             SubscribeNewsletters = false,
             InstallRegionalResources = _appSettings.Get<InstallationConfig>().InstallRegionalResources,
             DisableSampleDataOption = _appSettings.Get<InstallationConfig>().DisableSampleData,

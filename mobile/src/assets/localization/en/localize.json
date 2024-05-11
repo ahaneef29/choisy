@@ -60,6 +60,7 @@
     "already_exist": "Your account already exists",
     "already_registered_normal_auth": "You are registered using normal authentication. You cannot register again using social authentication",
     "cannot_register": "You cannot register at this moment. Please try again later",
+    "login_or_register": "Login/Register",
     "login": {
         "title": "Login",
         "continue_with_email": "Continue with Email",

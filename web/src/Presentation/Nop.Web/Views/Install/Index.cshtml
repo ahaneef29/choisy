@@ -35,7 +35,7 @@
             </div>
             <div class="row">
                 <div class="logo-wrapper col-md-12">
-                    <div class="logo"></div>
+                    @* <div class="logo"></div> *@
                 </div>
             </div>
         </div>
@@ -43,10 +43,10 @@
             <div class="content">
                 <div asp-validation-summary="All" class="message-error"></div>
 
-                <p>@ILS.GetResource("Tooltip2")</p>
+                @* <p>@ILS.GetResource("Tooltip2")</p>
                 <p>@ILS.GetResource("Documentation1") 
                     <a href="@(Docs.Main + Utm.OnInstall)" target="_blank" rel="noopener noreferrer">@ILS.GetResource("Documentation2")</a>.
-                </p>
+                </p> *@
 
                 <script>
                     function showThrobber(message) {
