@@ -25,7 +25,7 @@
                 <ion-icon name="logo-google"></ion-icon>
                 <ion-label>{{'customer.login.continue_with_google' | localizedresource | async}}</ion-label>
             </ion-button>
-            <ion-button expand="full" fill="clear" (click)="onLoginButtonClicked(loginTypeEnum.FACEBOOK)">
+            <ion-button expand="full" fill="clear" (click)="onLoginButtonClicked(LoginType.FACEBOOK)">
                 <ion-icon name="logo-facebook"></ion-icon>
                 <ion-label>{{'customer.login.continue_with_facebook' | localizedresource | async}}</ion-label>
             </ion-button>
@@ -107,9 +107,7 @@
               <ion-button
                 expand="full"
                 fill="clear"
-                [disabled]="!formGroup.controls['password'].valid"
-
-              >
+                [disabled]="!formGroup.controls['password'].valid" (click)="onLoginButtonClicked(LoginType.STANDARD)">
                 <ion-label
                   >{{'customer.login.title' | localizedresource | async}}</ion-label
                 >
@@ -119,13 +117,8 @@
         }
 
         <div class="other-buttons">
-          <ion-button
-            fill="clear"
-            class="button-no-border"
-          >
-            <ion-label
-              >{{'customer.forgot_password' | localizedresource | async}}</ion-label
-            >
+          <ion-button fill="clear" class="button-no-border">
+            <ion-label>{{'customer.forgot_password' | localizedresource | async}}</ion-label>
           </ion-button>
     
           <ion-button

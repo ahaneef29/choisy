@@ -117,10 +117,7 @@ export class CustomerSettingService extends AppSettingService {
     );
   }
   
-  getCustomerLocal(
-    email?,
-    customerRole?: CustomerRoleSystemName
-  ) {
+  getCustomerLocal(email?, customerRole?: CustomerRoleSystemName) {
     return new Promise<ICustomer | null>(async (resolve, reject) => {
       if (!email) {
         email = await this.getCurrentCustomerEmail();
@@ -146,8 +143,8 @@ export class CustomerSettingService extends AppSettingService {
     });
   }
 
-  isGuest(email?) {
-    return this.getCustomerLocal(email, CustomerRoleSystemName.Guests) != null;
+  async isGuest(email?) {
+    return (await this.getCustomerLocal(email, CustomerRoleSystemName.Guests)) != null;
   }
 
   async canActivate() {
