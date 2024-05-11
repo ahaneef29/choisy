@@ -10,7 +10,7 @@ import { DOCUMENT } from '@angular/common';
 import { LanguagePage } from './modules/language/language.page';
 import { CustomerSettingService } from './modules/customer/customer-setting.service';
 import { CustomerService } from './modules/customer/customer.service';
-import { CustomerRoleSystemName } from './modules/customer/customer.model';
+import { CustomerRoleSystemName, ICustomer } from './modules/customer/customer.model';
 import { CustomerConstant } from './modules/customer/customer-constant';
 
 @Component({
@@ -32,7 +32,8 @@ export class AppComponent {
     private customerSvc: CustomerService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private localizationSvc: LocalizationService, private helperSvc: HelperService
   ) {
     this.initializeApp();
   }
@@ -136,58 +137,49 @@ export class AppComponent {
     //   }
     // );
 
-    // this.pubsubSvc.subscribe(
-    //   UserConstant.EVENT_USER_LOGGEDIN_CLICKED,
-    //   async (params: { username; password; type }) => {
-    //     if (AppConstant.DEBUG) {
-    //       console.log(
-    //         'AppComponent: EVENT_USER_LOGGEDIN_CLICKED: params',
-    //         params
-    //       );
-    //     }
+    this.pubsubSvc.subscribe(CustomerConstant.EVENT_USER_LOGGEDIN_CLICKED
+      , async (params: { username; password; type }) => {
+        if (AppConstant.DEBUG) {
+          console.log('AppComponent: EVENT_USER_LOGGEDIN_CLICKED: params', params);
+        }
 
-    //     const profile = await this.userSvc.login(params.type, {
-    //       username: params.username,
-    //       password: params.password,
-    //     });
+        const profile = await this.customerSvc.login(params.type, {
+          username: params.username,
+          password: params.password,
+        });
 
-    //     if (!profile) {
-    //       return;
-    //     }
+        if (!profile) {
+          return;
+        }
 
-    //     this.pubsubSvc.publishEvent(UserConstant.EVENT_USER_LOGGEDIN, {
-    //       user: profile,
-    //       redirectToHome: true,
-    //       displayWelcomeMessage: true,
-    //     });
-    //   }
-    // );
+        this.pubsubSvc.publishEvent(CustomerConstant.EVENT_CUSTOMER_LOGGEDIN, {
+          user: profile,
+          redirectToHome: true,
+          displayWelcomeMessage: true
+        });
+      }
+    );
 
-    // this.pubsubSvc.subscribe(
-    //   UserConstant.EVENT_USER_LOGGEDIN,
-    //   async (params: {
-    //     user: IUserProfile;
-    //     redirectToHome?: boolean;
-    //     displayWelcomeMessage?: boolean;
-    //   }) => {
-    //     if (AppConstant.DEBUG) {
-    //       console.log('AppComponent: EVENT_USER_LOGGEDIN: params', params);
-    //     }
+    this.pubsubSvc.subscribe(CustomerConstant.EVENT_CUSTOMER_LOGGEDIN
+      , async (params: { user: ICustomer; redirectToHome?: boolean; displayWelcomeMessage?: boolean; }) => {
+        if (AppConstant.DEBUG) {
+          console.log('AppComponent: EVENT_USER_LOGGEDIN: params', params);
+        }
 
-    //     this.currentUser = params.user;
+        this.currentCustomer = params.user;
 
-    //     if (params.displayWelcomeMessage) {
-    //       const msg = await this.localizationSvc.getResource(
-    //         'user.login.logged_in'
-    //       );
-    //       await this.helperSvc.presentToast(msg);
-    //     }
+        if (params.displayWelcomeMessage) {
+          this.localizationSvc.getResource('user.login.logged_in')
+          .then(async (msg) => {
+            await this.helperSvc.presentToast(msg);
+          });
+        }
 
-    //     if (params.redirectToHome) {
-    //       await this._navigateTo('/home', null, true);
-    //     }
-    //   }
-    // );
+        if (params.redirectToHome) {
+          await this._navigateTo('/home', null, true);
+        }
+      }
+    );
 
     // this.pubsubSvc.subscribe(
     //   UserConstant.EVENT_USER_LOGGEDOUT,
@@ -275,37 +267,35 @@ export class AppComponent {
   }
 
   private async _setDefaults() {
-    const ce = await this.customerSettingSvc.getCurrentCustomerEmail();
-    if (ce) {
-      this.currentCustomer = await this.customerSettingSvc.getCustomerLocal(ce);
-    }
-
-    if (!this.currentCustomer) {
-      this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer();
-    } else {
-      //refresh guest always...
-      const guestCustomerRole = this.currentCustomer.customerRoles.filter(
-        (cr) => cr.systemName == CustomerRoleSystemName.Guests
-      );
-      if (guestCustomerRole.length) {
-        this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer(
-          ce
-        );
+    //run in background
+    this.customerSettingSvc.getCurrentCustomerEmail()
+    .then(async (ce) => {
+      if (ce) {
+        this.currentCustomer = await this.customerSettingSvc.getCustomerLocal(ce);
       }
-    }
 
-    // notify to refresh dashboard also
-    this.pubsubSvc.publishEvent(CustomerConstant.EVENT_CUSTOMER_LOGGEDIN, {
-      customer: this.currentCustomer,
-      shouldFetchCart: false,
+      if (!this.currentCustomer) {
+        this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer();
+      } else {
+        //refresh guest always...
+        const guestCustomerRole = this.currentCustomer.customerRoles
+          .filter((cr) => cr.systemName == CustomerRoleSystemName.Guests);
+        if (guestCustomerRole.length) {
+          this.currentCustomer = await this.customerSvc.getAndSetGuestCustomer(ce);
+        }
+      }
+  
+      // notify to refresh dashboard also
+      this.pubsubSvc.publishEvent(CustomerConstant.EVENT_CUSTOMER_LOGGEDIN, {
+        user: this.currentCustomer,
+        shouldFetchCart: false,
+      });
+  
+      if (AppConstant.DEBUG) {
+        console.log('AppComponent: initializeApp: currentUser', this.currentCustomer);
+      }
     });
 
-    if (AppConstant.DEBUG) {
-      console.log(
-        'AppComponent: initializeApp: currentUser',
-        this.currentCustomer
-      );
-    }
 
     // if (this.splashScreen) {
     //   this.splashScreen.hide();

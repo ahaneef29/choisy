@@ -3,13 +3,13 @@ import { ModalController } from '@ionic/angular';
 import { AuthenticationOptionsViewStep } from './authentication-options.model';
 import { BasePage } from '../../universal/base.page';
 import { AppConstant } from '../../universal/app-constant';
-import { LoginType } from '../../customer/customer.model';
+import { ILoginParams, LoginType } from '../../customer/customer.model';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { CustomerConstant } from '../../customer/customer-constant';
 
 interface IloginForm{
-  email: FormControl<string>,
-  password: FormControl<string>,
-
+  email: FormControl<string>;
+  password: FormControl<string>;
 }
 @Component({
   selector: 'app-auth-options',
@@ -22,20 +22,23 @@ export class AuthOptionsPage extends BasePage implements OnInit {
   @Input() viewStep!: AuthenticationOptionsViewStep;
 
   AuthOptionsViewStep = AuthenticationOptionsViewStep;
-  loginTypeEnum = LoginType;
   formGroup!: FormGroup<IloginForm>;
 
-
-  constructor(
-    private modalCtrl: ModalController,
-    private formBuilder: FormBuilder
-  ) {
+  constructor(private modalCtrl: ModalController, private formBuilder: FormBuilder) {
     super();
 
-    this.formGroup = this.formBuilder.group({
+    this.formGroup = this.formBuilder.group<IloginForm>({
       email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]} ),
       password: new FormControl('', {nonNullable: true, validators:Validators.required} ),
     })
+  }
+
+  get LoginType() {
+    return LoginType;
+  }
+
+  get f() {
+    return this.formGroup.controls;
   }
 
   ngOnInit() {
@@ -73,24 +76,22 @@ export class AuthOptionsPage extends BasePage implements OnInit {
   }
 
   async onLoginButtonClicked(type: LoginType) {
-    let args = null;
+    debugger
+    let args: ILoginParams;
 
     switch (type) {
       case LoginType.STANDARD:
-        // args = {
-        //   username: this.f.username.value,
-        //   password: this.f.password.value,
-        // };
+        args = {
+          username: this.f.email.value,
+          password: this.f.password.value,
+        };
         break;
 
       default:
         break;
     }
 
-    // this.pubsubSvc.publishEvent(UserConstant.EVENT_USER_LOGGEDIN_CLICKED, {
-    //   ...args,
-    //   type,
-    // });
-    await this.dismiss(args);
+    this.pubsubSvc.publishEvent(CustomerConstant.EVENT_USER_LOGGEDIN_CLICKED, { ...args!, type });
+    await this.dismiss(args!);
   }
 }
