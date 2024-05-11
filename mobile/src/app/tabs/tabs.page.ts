@@ -28,6 +28,7 @@ export class TabsPage extends BasePage implements OnInit  {
     );
   }
   async ngOnInit(){
+    ''
   }
 
   async onTabClicked(tabs: string) {

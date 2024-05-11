@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
       },
       {
+        path: 'profile-options',
+        loadChildren: () => import('../modules/auth/profile-options/profile-options.module').then( m => m.ProfileOptionsPageModule)
+      },
+      {
         path: '',
         redirectTo: '/home/dashboard',
         pathMatch: 'full'

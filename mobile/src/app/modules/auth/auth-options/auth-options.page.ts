@@ -76,9 +76,7 @@ export class AuthOptionsPage extends BasePage implements OnInit {
   }
 
   async onLoginButtonClicked(type: LoginType) {
-    debugger
     let args: ILoginParams;
-
     switch (type) {
       case LoginType.STANDARD:
         args = {
