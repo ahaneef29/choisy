@@ -40,6 +40,8 @@ export class LocalizationService {
         } else {
           resolve(keyString);
         }
+      }, (err) => {
+        resolve(keyString);
       });
     });
   }

@@ -285,7 +285,6 @@ export class AppComponent {
         }
       }
   
-      // notify to refresh dashboard also
       this.pubsubSvc.publishEvent(CustomerConstant.EVENT_CUSTOMER_LOGGEDIN, {
         user: this.currentCustomer,
         shouldFetchCart: false,
@@ -310,7 +309,8 @@ export class AppComponent {
     let appTour = res[1];
 
     if (!wkl) {
-      const wkl = await this._openLanguageModal();
+      // const wkl = await this._openLanguageModal();
+      const wkl = 'en';
 
       await this.appSettingSvc.putWorkingLanguage(wkl);
       this.pubsubSvc.publishEvent(AppConstant.EVENT_LANGUAGE_CHANGED, {
@@ -328,9 +328,10 @@ export class AppComponent {
       return;
     }
 
-    if (!appTour) {
-      this.router.navigate(['/app-tour']);
-    }
+    // if (!appTour) {
+    //   this.router.navigate(['/app-tour']);
+        //return;
+    // }
 
     if (this.existingRouteUrl) {
       await this._navigateTo(this.existingRouteUrl);
