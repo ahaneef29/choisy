@@ -1,5 +1,22 @@
 
 app-profile-options{
+
+    ion-content{
+        ion-item{
+            --padding-start: 0;
+        }
+        .user{
+            margin-bottom: 15px;
+            ion-label{
+                font-size: xx-large;
+            }
+        }
+
+        .msg {
+            margin-bottom: 15px;
+
+        }
+    }
     ion-footer{
         ion-button{
             width: 100%;
