@@ -13,7 +13,7 @@
 
     <ion-tab-button tab="profile-options" href="/tab/profile-options" (click)="onTabClicked('account')">
       <ion-icon name="person-outline"></ion-icon>
-      <ion-label>{{(currentCustomer ? 'customer.profile.title' : 'customer.login_or_register') | localizedresource | async}}</ion-label>
+      <ion-label>{{(currentCustomer ? (currentCustomer.isGuest ? 'customer.profile.title' : 'customer.login_or_register') : '...') | localizedresource | async}}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="tab3" href="/tabs/tab3">
