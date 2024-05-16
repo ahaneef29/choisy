@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { BasePage } from '../modules/universal/base.page';
@@ -11,9 +11,8 @@ import { CustomerConstant } from '../modules/customer/customer-constant';
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss']
 })
-export class TabsPage extends BasePage implements OnInit  {
+export class TabsPage extends BasePage implements OnInit, OnDestroy  {
   currentCustomer!: ICustomer;
-
   private _subscriptions = new Subscription();
 
   constructor(
@@ -27,8 +26,13 @@ export class TabsPage extends BasePage implements OnInit  {
       })
     );
   }
+  ngOnDestroy(): void {
+    if (this._subscriptions) {
+      this._subscriptions.unsubscribe();
+    }
+  }
   async ngOnInit(){
-    ''
+''
   }
 
   async onTabClicked(tabs: string) {
