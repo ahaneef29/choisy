@@ -1,3 +1,3 @@
 # Chosiy
 
-Chosiy is the Ecommerce Platform for web and mobile
+## Chosiy is the Ecommerce Platform for web and mobile
